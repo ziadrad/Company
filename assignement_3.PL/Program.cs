@@ -1,3 +1,8 @@
+using assignement_3.BLL.Interfaces;
+using assignement_3.BLL.Reprositories;
+using assignement_3.DAL.Data.contexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace assignement_3.PL
 {
     public class Program
@@ -8,7 +13,13 @@ namespace assignement_3.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddScoped<IDepartmentReprositories, DepartmentReprositories>();
+            builder.Services.AddDbContext<CompanyDbContext>(options => 
+            
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")
+            
+            )
+            );
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

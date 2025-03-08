@@ -7,7 +7,7 @@ using assignement_3.DAL.Models;
 
 namespace assignement_3.BLL.Interfaces
 {
-    internal interface IDepartmentReprositories
+    public interface IDepartmentReprositories
     {
         IEnumerable<Department> GetAll();
         Department? GetDepartment(int id);

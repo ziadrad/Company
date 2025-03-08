@@ -9,12 +9,12 @@ using assignement_3.DAL.Models;
 
 namespace assignement_3.BLL.Reprositories
 {
-    internal class DepartmentReprositories : IDepartmentReprositories
+    public class DepartmentReprositories : IDepartmentReprositories
     {
         private CompanyDbContext context;
-        public DepartmentReprositories()
+        public DepartmentReprositories(CompanyDbContext dbContext)
         {
-            context = new CompanyDbContext();
+            context = dbContext;
         }
         public IEnumerable<Department> GetAll()
         {
