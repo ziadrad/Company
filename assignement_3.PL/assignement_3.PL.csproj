@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\assignement_3.BLL\assignement_3.BLL.csproj" />
+    <ProjectReference Include="..\assignement_3.DAL\assignement_3.DAL.csproj" />
   </ItemGroup>
 
 </Project>
