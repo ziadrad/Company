@@ -13,6 +13,9 @@ namespace assignement_3.PL.Controllers
         
         _departmentReprositories = departmentReprositories;
         }
+
+
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -20,11 +23,16 @@ namespace assignement_3.PL.Controllers
             return View(department);
         }
 
+
+
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
+
+
+
         [HttpPost]
         public IActionResult Create(CreatDepartmentDto model)
         {
@@ -44,11 +52,96 @@ namespace assignement_3.PL.Controllers
             return View();
         }
 
+
+
         [HttpGet]
-        public IActionResult Details( Department model)
+        public IActionResult Details( int? id , string viewName= "Details")
         {
-            var department = _departmentReprositories.GetDepartment(model.Id);
+            if (id is null) return BadRequest(error: "Invalid Id"); // 400
+
+            var department = _departmentReprositories.Get(id.Value);
+            if (department is null) return NotFound(new
+            {
+                statusCode = 404,
+                message = $"Department With Id :{id} is not found",
+            }
+            );
+            return View(viewName,department);
+        }
+        
+
+
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+
+            if (id is null) return BadRequest(error: "Invalid Id"); // 400
+
+            var department = _departmentReprositories.Get(id.Value);
+            if (department is null) return NotFound(new
+            {
+                statusCode = 404,
+                message = $"Department With Id :{id} is not found",
+            }
+            );
             return View(department);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete([FromRoute] int id,UpdateDepartmentDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var department = new Department()
+                {
+                    Id = id,
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt,
+                };
+                var count = _departmentReprositories.Delete(department);
+                if (count > 0)
+                {
+                    return RedirectToAction(nameof(Index));
+                };
+            }
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            return Details(id,"Edit");
+        }
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromRoute] int id, UpdateDepartmentDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var department = new Department()
+                {
+                    Id = id,
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt,
+                };
+                var count = _departmentReprositories.Update(department);
+                if (count > 0)
+                {
+                    return RedirectToAction(nameof(Index));
+                };
+            }
+            return View();
         }
     }
 }

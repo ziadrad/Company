@@ -9,15 +9,10 @@ using assignement_3.DAL.Models;
 
 namespace assignement_3.BLL.Reprositories
 {
-    public class DepartmentReprositories :GeneralResporitory<Department> , IDepartmentReprositories
+    public class EmployeeResporitory : GeneralResporitory<Employee>, IEmployeeRespositry
     {
-        public DepartmentReprositories(CompanyDbContext dbContext):base(dbContext) 
+        public EmployeeResporitory(CompanyDbContext _context) : base(_context)
         {
-           
         }
-       
-
-      
-       
     }
 }

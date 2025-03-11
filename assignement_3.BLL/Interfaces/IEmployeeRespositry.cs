@@ -7,8 +7,8 @@ using assignement_3.DAL.Models;
 
 namespace assignement_3.BLL.Interfaces
 {
-    public interface IDepartmentReprositories : IGeneralRespo<Department>
+    public interface IEmployeeRespositry:IGeneralRespo<Employee>
     {
-      
+
     }
 }

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace assignement_3.DAL.Models
 {
-    public class Department:BaseEntity
+    public class BaseEntity
     {
-
-        public string Code { get; set; }
-        public DateTime CreateAt { get; set; }
-            
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
