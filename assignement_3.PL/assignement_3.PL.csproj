@@ -19,4 +19,8 @@
     <ProjectReference Include="..\assignement_3.DAL\assignement_3.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Shared\NewFolder\" />
+  </ItemGroup>
+
 </Project>

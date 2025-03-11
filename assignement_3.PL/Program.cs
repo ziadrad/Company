@@ -14,6 +14,7 @@ namespace assignement_3.PL
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentReprositories, DepartmentReprositories>();
+            builder.Services.AddScoped<IEmployeeRespositry, EmployeeResporitory>();
             builder.Services.AddDbContext<CompanyDbContext>(options => 
             
             options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")

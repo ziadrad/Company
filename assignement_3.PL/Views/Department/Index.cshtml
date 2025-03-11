@@ -32,15 +32,8 @@
                     <td>
                         @ITem.CreateAt
                     </td>
-                    <td>
-                        <a asp-action="Details"class="btn btn-warning" asp-route-id="@ITem.Id"> Details</a>
-                    </td>
-                    <td>
-                        <a asp-action="Update" class="btn btn-info" asp-route-id="@ITem.Id"> Update</a>
-                    </td>
-                    <td>
-                        <a asp-action="Delete" class="btn btn-danger" asp-route-id="@ITem.Id"> Delete</a>
-                    </td>
+                    <partial name="BtnPartialView" model="@ITem.Id" />
+
                </tr>
            }
         </tbody>
