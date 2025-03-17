@@ -2,6 +2,7 @@
 using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignement_3.PL.Controllers
@@ -9,9 +10,13 @@ namespace assignement_3.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentReprositories _departmentReprositories;
-       public DepartmentController(IDepartmentReprositories departmentReprositories) {
+        private readonly IMapper mapper;
+
+        public DepartmentController(IDepartmentReprositories departmentReprositories, IMapper mapper)
+        {
         
         _departmentReprositories = departmentReprositories;
+            this.mapper = mapper;
         }
 
 
@@ -46,12 +51,13 @@ namespace assignement_3.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var department = new Department()
-                {
-                    Code = model.Code,
-                    Name = model.Name,
-                    CreateAt = model.CreateAt,
-                };
+                //var department = new Department()
+                //{
+                //    Code = model.Code,
+                //    Name = model.Name,
+                //    CreateAt = model.CreateAt,
+                //};
+                var department = mapper.Map<Department>(model);
                 var count = _departmentReprositories.Add(department);
                 if (count > 0) {
                     TempData["Message"] = "new Department is created";
@@ -101,18 +107,19 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id,UpdateDepartmentDto model)
+        public IActionResult Delete([FromRoute] int id,Department model)
         {
 
             if (ModelState.IsValid)
             {
-                var department = new Department()
-                {
-                    Id = id,
-                    Code = model.Code,
-                    Name = model.Name,
-                    CreateAt = model.CreateAt,
-                };
+                //var department = new Department()
+                //{
+                //    Id = id,
+                //    Code = model.Code,
+                //    Name = model.Name,
+                //    CreateAt = model.CreateAt,
+                //};
+                var department = mapper.Map<Department>(model);
                 var count = _departmentReprositories.Delete(department);
                 if (count > 0)
                 {
@@ -134,17 +141,18 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, UpdateDepartmentDto model)
+        public IActionResult Edit([FromRoute] int id, Department model)
         {
             if (ModelState.IsValid)
             {
-                var department = new Department()
-                {
-                    Id = id,
-                    Code = model.Code,
-                    Name = model.Name,
-                    CreateAt = model.CreateAt,
-                };
+                //var department = new Department()
+                //{
+                //    Id = id,
+                //    Code = model.Code,
+                //    Name = model.Name,
+                //    CreateAt = model.CreateAt,
+                //};
+                var department = mapper.Map<Department>(model);
                 var count = _departmentReprositories.Update(department);
                 if (count > 0)
                 {

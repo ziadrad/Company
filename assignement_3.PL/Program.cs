@@ -1,6 +1,8 @@
 using assignement_3.BLL.Interfaces;
 using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Data.contexts;
+using assignement_3.DAL.Models;
+using assignement_3.PL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace assignement_3.PL
@@ -15,12 +17,16 @@ namespace assignement_3.PL
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentReprositories, DepartmentReprositories>();
             builder.Services.AddScoped<IEmployeeRespositry, EmployeeResporitory>();
-            builder.Services.AddDbContext<CompanyDbContext>(options => 
+            builder.Services.AddDbContext<CompanyDbContext>(options =>
             
             options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")
-            
+
             )
             );
+
+            builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

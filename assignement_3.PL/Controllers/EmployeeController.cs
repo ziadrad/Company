@@ -1,6 +1,7 @@
 ﻿using assignement_3.BLL.Interfaces;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignement_3.PL.Controllers
@@ -8,10 +9,13 @@ namespace assignement_3.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRespositry _employeeRespositry;
-        public EmployeeController(IEmployeeRespositry employeeRespositry)
+        private readonly IMapper _mapper;
+
+        public EmployeeController(IEmployeeRespositry employeeRespositry, IMapper mapper)
         {
 
             _employeeRespositry = employeeRespositry;
+            _mapper = mapper;
         }
 
 
@@ -47,21 +51,22 @@ namespace assignement_3.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var employee = new Employee()
-                {
+                //var employee = new Employee()
+                //{
 
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    Phone = model.Phone,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                   Salary = model.Salary,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    DepartmentId = model.DepartmentId
-                };
+                //    Name = model.Name,
+                //    Address = model.Address,
+                //    Age = model.Age,
+                //    Phone = model.Phone,
+                //    CreateAt = model.CreateAt,
+                //    HiringDate = model.HiringDate,
+                //    Email = model.Email,
+                //   Salary = model.Salary,
+                //    IsActive = model.IsActive,
+                //    IsDeleted = model.IsDeleted,
+                //    DepartmentId = model.DepartmentId
+                //};
+              var employee =   _mapper.Map<Employee>(model);
                 var count = _employeeRespositry.Add(employee);
                 if (count > 0)
                 {
@@ -114,20 +119,22 @@ namespace assignement_3.PL.Controllers
         public IActionResult Delete([FromRoute] int id, Employee model)
         {
 
-                var employee = new Employee()
-                {
-                    Id = id,
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    Phone = model.Phone,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                };
-                var count = _employeeRespositry.Delete(employee);
+            //var employee = new Employee()
+            //{
+            //    Id = id,
+            //    Name = model.Name,
+            //    Address = model.Address,
+            //    Age = model.Age,
+            //    Phone = model.Phone,
+            //    CreateAt = model.CreateAt,
+            //    HiringDate = model.HiringDate,
+            //    Email = model.Email,
+            //    IsActive = model.IsActive,
+            //    IsDeleted = model.IsDeleted,
+            //};
+            var employee = _mapper.Map<Employee>(model);
+
+            var count = _employeeRespositry.Delete(employee);
                 if (count > 0)
                 {
 
@@ -153,21 +160,23 @@ namespace assignement_3.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var employee = new Employee()
-                {
-                    Id = id,
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    Phone = model.Phone,
-                    Salary = model.Salary,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    DepartmentId = model.DepartmentId
-                };
+                //var employee = new Employee()
+                //{
+                //    Id = id,
+                //    Name = model.Name,
+                //    Address = model.Address,
+                //    Age = model.Age,
+                //    Phone = model.Phone,
+                //    Salary = model.Salary,
+                //    CreateAt = model.CreateAt,
+                //    HiringDate = model.HiringDate,
+                //    Email = model.Email,
+                //    IsActive = model.IsActive,
+                //    IsDeleted = model.IsDeleted,
+                //    DepartmentId = model.DepartmentId
+                //};
+                var employee = _mapper.Map<Employee>(model);
+
                 var count = _employeeRespositry.Update(employee);
                 if (count > 0)
                 {

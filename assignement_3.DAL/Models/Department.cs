@@ -11,7 +11,7 @@ namespace assignement_3.DAL.Models
 
         public string Code { get; set; }
         public DateTime CreateAt { get; set; }
-        public List<Employee> Employees { get; set; }
+        public List<Employee>? Employees { get; set; }
             
     }
 }
