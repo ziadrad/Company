@@ -10,6 +10,7 @@ namespace assignement_3.BLL.Interfaces
     public interface IGeneralRespo<T> where T : class
     {
         IEnumerable<T> GetAll();
+        List<T> GetByName(string SearchInput);
         T? Get(int id);
         int Add(T model);
         int Update(T model);

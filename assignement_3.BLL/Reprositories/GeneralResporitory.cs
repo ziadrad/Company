@@ -38,6 +38,15 @@ namespace assignement_3.BLL.Reprositories
             return context.Set<T>().Find(id);
         }
 
+        public List<T>? GetByName(string name)
+        {
+            if (typeof(T) == typeof(Employee))
+            {
+                return context.Employees.Include(E => E.Department).Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList() as List<T>;
+            }
+            return context.Set<T>().Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList();
+        }
+
         public int Add(T department)
         {
             context.Set<T>().Add(department);
@@ -56,6 +65,6 @@ namespace assignement_3.BLL.Reprositories
             return context.SaveChanges();
         }
 
-
+     
     }
 }

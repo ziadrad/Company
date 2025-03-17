@@ -17,9 +17,18 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index( string? SearchInput)
         {
-            var employee = _employeeRespositry.GetAll();
+            IEnumerable<Employee> employee;
+            if (SearchInput == null)
+            {
+                 employee = _employeeRespositry.GetAll();
+            }
+            else
+            {
+                 employee = _employeeRespositry.GetByName(SearchInput);
+            }
+           
             return View(employee);
         }
 
