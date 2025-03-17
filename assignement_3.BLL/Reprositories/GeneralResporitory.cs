@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using assignement_3.BLL.Interfaces;
 using assignement_3.DAL.Data.contexts;
 using assignement_3.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace assignement_3.BLL.Reprositories
 {
@@ -20,11 +21,20 @@ namespace assignement_3.BLL.Reprositories
         }
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>)context.Employees.Include(E => E.Department).ToList();
+            }
+          
             return context.Set<T>().ToList();
         }
 
         public T? Get(int id)
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return context.Employees.Include(E => E.Department).FirstOrDefault(E=>E.Id == id) as T;
+            }
             return context.Set<T>().Find(id);
         }
 
