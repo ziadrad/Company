@@ -46,6 +46,8 @@ namespace assignement_3.PL.Controllers
                 };
                 var count = _departmentReprositories.Add(department);
                 if (count > 0) {
+                    TempData["Message"] = "new Department is created";
+
                     return RedirectToAction(nameof(Index));
                 };
             }
