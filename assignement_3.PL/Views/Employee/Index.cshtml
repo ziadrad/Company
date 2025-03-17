@@ -6,12 +6,15 @@
 
 <h1>All Employees</h1>
 
+
 @if (!string.IsNullOrEmpty(@TempData["Message"] as string))
 {
     <div class="m-3 alert alert-success ">
         <p>@TempData["Message"]</p>
     </div>
 }
+
+<partial name="Search_partial_view" />
 
 <a asp-action="Create" asp-controller="Employee" class="btn btn-primary my-5">Create Department </a>
 @if (Model.Count() > 0)
@@ -52,12 +55,13 @@
                     <td>@item.IsDeleted</td>
                     <td>@item.HiringDate</td>
                     <td>@item.CreateAt</td>
-                    @if( item.DepartmentId is null)
+
+                    @if(@item.DepartmentId is null)
                     {
                         <td>No Department</td>
                     }
                     else{
-                    <td>@item.Department.Name</td>
+                    <td>@item.Department?.Name</td>
                     }
                     <partial name="BtnPartialView" model="@item.Id" />
                 </tr>

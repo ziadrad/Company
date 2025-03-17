@@ -17,12 +17,20 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
-            var department = _departmentReprositories.GetAll();
+            IEnumerable<Department> department;
+            if (SearchInput == null)
+            {
+                department = _departmentReprositories.GetAll();
+            }
+            else
+            {
+                department = _departmentReprositories.GetByName(SearchInput);
+            }
+
             return View(department);
         }
-
 
 
         [HttpGet]
