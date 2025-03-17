@@ -27,5 +27,7 @@ namespace assignement_3.PL.dto
         public DateTime HiringDate { get; set; }
         [DisplayName(displayName: "Date Of create")]
         public DateTime CreateAt { get; set; }
+        public int DepartmentId { get; set; }
+
     }
 }

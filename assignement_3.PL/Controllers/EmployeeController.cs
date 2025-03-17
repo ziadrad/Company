@@ -48,8 +48,10 @@ namespace assignement_3.PL.Controllers
                     CreateAt = model.CreateAt,
                     HiringDate = model.HiringDate,
                     Email = model.Email,
+                   Salary = model.Salary,
                     IsActive = model.IsActive,
                     IsDeleted = model.IsDeleted,
+                    DepartmentId = model.DepartmentId
                 };
                 var count = _employeeRespositry.Add(employee);
                 if (count > 0)
@@ -119,6 +121,7 @@ namespace assignement_3.PL.Controllers
                 var count = _employeeRespositry.Delete(employee);
                 if (count > 0)
                 {
+
                     return RedirectToAction(nameof(Index));
                 };
             
@@ -148,15 +151,18 @@ namespace assignement_3.PL.Controllers
                     Address = model.Address,
                     Age = model.Age,
                     Phone = model.Phone,
+                    Salary = model.Salary,
                     CreateAt = model.CreateAt,
                     HiringDate = model.HiringDate,
                     Email = model.Email,
                     IsActive = model.IsActive,
                     IsDeleted = model.IsDeleted,
+                    DepartmentId = model.DepartmentId
                 };
                 var count = _employeeRespositry.Update(employee);
                 if (count > 0)
                 {
+                    TempData["Message"] = "new Employee is edited";
                     return RedirectToAction(nameof(Index));
                 };
             }
