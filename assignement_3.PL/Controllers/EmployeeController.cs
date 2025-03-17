@@ -54,6 +54,7 @@ namespace assignement_3.PL.Controllers
                 var count = _employeeRespositry.Add(employee);
                 if (count > 0)
                 {
+                    TempData["Message"] = "new Employee is created";
                     return RedirectToAction(nameof(Index));
                 };
             }
