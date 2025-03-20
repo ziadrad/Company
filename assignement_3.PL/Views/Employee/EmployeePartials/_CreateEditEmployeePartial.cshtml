@@ -1,7 +1,7 @@
-﻿@model Employee
+﻿@model CreatEmployeeDto
 @inject IDepartmentReprositories _departmentReprosatory
 @{
-    var Departments = new SelectList(_departmentReprosatory.GetAll(), "Id", "Name");
+    var Departments = new SelectList(await _departmentReprosatory.GetAll(), "Id", "Name");
 }
 <div class="my-3">
     <label asp-for="Name" class="col-form-label">Name</label>
@@ -70,7 +70,11 @@
 </select>
 
 </div>
+<div class="my-3">
+    <label asp-for="Image" class="col-form-label "></label>
+    <input asp-for="Image" type="file" class="form-control" />
 
+</div>
 <div>
     <input type="submit" value="create" class="btn btn-info" />
     <a asp-action="Index" A class="btn btn-light"> Back to List </a>

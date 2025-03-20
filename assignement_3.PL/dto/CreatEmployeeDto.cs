@@ -28,6 +28,7 @@ namespace assignement_3.PL.dto
         [DisplayName(displayName: "Date Of create")]
         public DateTime CreateAt { get; set; }
         public int DepartmentId { get; set; }
-
+        public string? ImageName { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

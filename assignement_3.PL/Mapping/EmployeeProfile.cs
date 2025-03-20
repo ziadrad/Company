@@ -9,6 +9,7 @@ namespace assignement_3.PL.Mapping
         public EmployeeProfile()
         {
             CreateMap<CreatEmployeeDto, Employee>();
+            CreateMap<Employee, CreatEmployeeDto>();
         }
     }
 }

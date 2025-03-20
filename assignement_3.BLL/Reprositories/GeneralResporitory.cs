@@ -19,37 +19,37 @@ namespace assignement_3.BLL.Reprositories
 
             context = _context;
         }
-        public IEnumerable<T> GetAll()
+        public async Task< IEnumerable<T>> GetAll()
         {
             if (typeof(T) == typeof(Employee))
             {
-                return (IEnumerable<T>)context.Employees.Include(E => E.Department).ToList();
+                return (IEnumerable<T>)await  context.Employees.Include(E => E.Department).ToListAsync();
             }
           
-            return context.Set<T>().ToList();
+            return (IEnumerable<T>) await context.Set<T>().ToListAsync();
         }
 
-        public T? Get(int id)
+        public async Task<T>? Get(int id)
         {
             if (typeof(T) == typeof(Employee))
             {
-                return context.Employees.Include(E => E.Department).FirstOrDefault(E=>E.Id == id) as T;
+                return await context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T ;
             }
-            return context.Set<T>().Find(id);
+            return (T) await context.Set<T>().FindAsync(id) ;
         }
 
-        public List<T>? GetByName(string name)
+        public async Task<IEnumerable<T>>? GetByName(string name)
         {
             if (typeof(T) == typeof(Employee))
             {
-                return context.Employees.Include(E => E.Department).Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList() as List<T>;
+                return (IEnumerable<T>) await context.Employees.Include(E => E.Department).Where(E => E.Name.ToLower().Contains(name.ToLower())).ToListAsync();
             }
-            return context.Set<T>().Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList();
+            return  await context.Set<T>().Where(E => E.Name.ToLower().Contains(name.ToLower())).ToListAsync();
         }
 
-        public void Add(T department)
+        public async Task AddAsync(T department)
         {
-            context.Set<T>().Add(department);
+           await context.Set<T>().AddAsync(department);
         }
 
         public void Update(T department)
