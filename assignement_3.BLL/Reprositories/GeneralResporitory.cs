@@ -47,22 +47,19 @@ namespace assignement_3.BLL.Reprositories
             return context.Set<T>().Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList();
         }
 
-        public int Add(T department)
+        public void Add(T department)
         {
             context.Set<T>().Add(department);
-            return context.SaveChanges();
         }
 
-        public int Update(T department)
+        public void Update(T department)
         {
             context.Set<T>().Update(department);
-            return context.SaveChanges();
         }
 
-        public int Delete(T department)
+        public void Delete(T department)
         {
             context.Set<T>().Remove(department);
-            return context.SaveChanges();
         }
 
      

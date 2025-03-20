@@ -1,4 +1,5 @@
 ﻿using assignement_3.BLL.Interfaces;
+using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using AutoMapper;
@@ -8,13 +9,13 @@ namespace assignement_3.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRespositry _employeeRespositry;
+        private readonly IUnit_of_Work _unit_Of_Work;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRespositry employeeRespositry, IMapper mapper)
+        public EmployeeController(IUnit_of_Work unit_Of_Work, IMapper mapper)
         {
 
-            _employeeRespositry = employeeRespositry;
+            _unit_Of_Work = unit_Of_Work;
             _mapper = mapper;
         }
 
@@ -26,11 +27,11 @@ namespace assignement_3.PL.Controllers
             IEnumerable<Employee> employee;
             if (SearchInput == null)
             {
-                 employee = _employeeRespositry.GetAll();
+                 employee = _unit_Of_Work.EmployeeRespositry.GetAll();
             }
             else
             {
-                 employee = _employeeRespositry.GetByName(SearchInput);
+                 employee = _unit_Of_Work.EmployeeRespositry.GetByName(SearchInput);
             }
            
             return View(employee);
@@ -67,7 +68,9 @@ namespace assignement_3.PL.Controllers
                 //    DepartmentId = model.DepartmentId
                 //};
               var employee =   _mapper.Map<Employee>(model);
-                var count = _employeeRespositry.Add(employee);
+                _unit_Of_Work.EmployeeRespositry.Add(employee);
+                var count = _unit_Of_Work.complete();
+
                 if (count > 0)
                 {
                     TempData["Message"] = "new Employee is created";
@@ -84,7 +87,7 @@ namespace assignement_3.PL.Controllers
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var employee = _employeeRespositry.Get(id.Value);
+            var employee = _unit_Of_Work.EmployeeRespositry.Get(id.Value);
             if (employee is null) return NotFound(new
             {
                 statusCode = 404,
@@ -103,7 +106,7 @@ namespace assignement_3.PL.Controllers
 
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var employee = _employeeRespositry.Get(id.Value);
+            var employee = _unit_Of_Work.EmployeeRespositry.Get(id.Value);
             if (employee is null) return NotFound(new
             {
                 statusCode = 404,
@@ -134,8 +137,10 @@ namespace assignement_3.PL.Controllers
             //};
             var employee = _mapper.Map<Employee>(model);
 
-            var count = _employeeRespositry.Delete(employee);
-                if (count > 0)
+            _unit_Of_Work.EmployeeRespositry.Delete(employee);
+            var count = _unit_Of_Work.complete();
+
+            if (count > 0)
                 {
 
                     return RedirectToAction(nameof(Index));
@@ -177,7 +182,9 @@ namespace assignement_3.PL.Controllers
                 //};
                 var employee = _mapper.Map<Employee>(model);
 
-                var count = _employeeRespositry.Update(employee);
+              _unit_Of_Work.EmployeeRespositry.Update(employee);
+                var count = _unit_Of_Work.complete();
+
                 if (count > 0)
                 {
                     TempData["Message"] = "new Employee is edited";
