@@ -17,13 +17,15 @@ namespace assignement_3.PL
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentReprositories, DepartmentReprositories>();
             builder.Services.AddScoped<IEmployeeRespositry, EmployeeResporitory>();
+            builder.Services.AddScoped<IUnit_of_Work, UnitOfWork>();
+
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             
             options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")
 
             )
             );
-
+            
             builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(typeof(DepartmentProfile));
 

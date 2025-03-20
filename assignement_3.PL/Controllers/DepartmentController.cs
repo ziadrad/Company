@@ -9,13 +9,13 @@ namespace assignement_3.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentReprositories _departmentReprositories;
+        private readonly IUnit_of_Work unit_Of_Work;
         private readonly IMapper mapper;
 
-        public DepartmentController(IDepartmentReprositories departmentReprositories, IMapper mapper)
+        public DepartmentController(IUnit_of_Work unit_Of_Work, IMapper mapper)
         {
         
-        _departmentReprositories = departmentReprositories;
+            this.unit_Of_Work = unit_Of_Work;
             this.mapper = mapper;
         }
 
@@ -27,11 +27,11 @@ namespace assignement_3.PL.Controllers
             IEnumerable<Department> department;
             if (SearchInput == null)
             {
-                department = _departmentReprositories.GetAll();
+                department = unit_Of_Work.DepartmentReprositories.GetAll();
             }
             else
             {
-                department = _departmentReprositories.GetByName(SearchInput);
+                department = unit_Of_Work.DepartmentReprositories.GetByName(SearchInput);
             }
 
             return View(department);
@@ -58,7 +58,8 @@ namespace assignement_3.PL.Controllers
                 //    CreateAt = model.CreateAt,
                 //};
                 var department = mapper.Map<Department>(model);
-                var count = _departmentReprositories.Add(department);
+               unit_Of_Work.DepartmentReprositories.Add(department);
+                var count = unit_Of_Work.complete();
                 if (count > 0) {
                     TempData["Message"] = "new Department is created";
 
@@ -75,7 +76,7 @@ namespace assignement_3.PL.Controllers
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var department = _departmentReprositories.Get(id.Value);
+            var department = unit_Of_Work.DepartmentReprositories.Get(id.Value);
             if (department is null) return NotFound(new
             {
                 statusCode = 404,
@@ -94,7 +95,7 @@ namespace assignement_3.PL.Controllers
 
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var department = _departmentReprositories.Get(id.Value);
+            var department = unit_Of_Work.DepartmentReprositories.Get(id.Value);
             if (department is null) return NotFound(new
             {
                 statusCode = 404,
@@ -120,7 +121,9 @@ namespace assignement_3.PL.Controllers
                 //    CreateAt = model.CreateAt,
                 //};
                 var department = mapper.Map<Department>(model);
-                var count = _departmentReprositories.Delete(department);
+                unit_Of_Work.DepartmentReprositories.Delete(department);
+                var count = unit_Of_Work.complete();
+
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -153,7 +156,9 @@ namespace assignement_3.PL.Controllers
                 //    CreateAt = model.CreateAt,
                 //};
                 var department = mapper.Map<Department>(model);
-                var count = _departmentReprositories.Update(department);
+                 unit_Of_Work.DepartmentReprositories.Update(department);
+                var count = unit_Of_Work.complete();
+    
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
