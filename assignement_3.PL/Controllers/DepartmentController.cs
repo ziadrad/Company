@@ -22,16 +22,16 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(string? SearchInput)
+        public async Task <IActionResult> Index(string? SearchInput)
         {
             IEnumerable<Department> department;
             if (SearchInput == null)
             {
-                department = unit_Of_Work.DepartmentReprositories.GetAll();
+                department =await unit_Of_Work.DepartmentReprositories.GetAll();
             }
             else
             {
-                department = unit_Of_Work.DepartmentReprositories.GetByName(SearchInput);
+                department = await unit_Of_Work.DepartmentReprositories.GetByName(SearchInput);
             }
 
             return View(department);
@@ -47,7 +47,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Create(CreatDepartmentDto model)
+        public async Task<IActionResult> Create(CreatDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
@@ -58,8 +58,8 @@ namespace assignement_3.PL.Controllers
                 //    CreateAt = model.CreateAt,
                 //};
                 var department = mapper.Map<Department>(model);
-               unit_Of_Work.DepartmentReprositories.Add(department);
-                var count = unit_Of_Work.complete();
+              await unit_Of_Work.DepartmentReprositories.AddAsync(department);
+                var count = await unit_Of_Work.completeAsync();
                 if (count > 0) {
                     TempData["Message"] = "new Department is created";
 
@@ -72,11 +72,11 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Details( int? id , string viewName= "Details")
+        public async Task<IActionResult> Details( int? id , string viewName= "Details")
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var department = unit_Of_Work.DepartmentReprositories.Get(id.Value);
+            var department = await unit_Of_Work.DepartmentReprositories.Get(id.Value);
             if (department is null) return NotFound(new
             {
                 statusCode = 404,
@@ -90,12 +90,12 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
 
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var department = unit_Of_Work.DepartmentReprositories.Get(id.Value);
+            var department = await unit_Of_Work.DepartmentReprositories.Get(id.Value);
             if (department is null) return NotFound(new
             {
                 statusCode = 404,
@@ -108,7 +108,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id,Department model)
+        public async Task<IActionResult> Delete([FromRoute] int id,Department model)
         {
 
             if (ModelState.IsValid)
@@ -122,7 +122,7 @@ namespace assignement_3.PL.Controllers
                 //};
                 var department = mapper.Map<Department>(model);
                 unit_Of_Work.DepartmentReprositories.Delete(department);
-                var count = unit_Of_Work.complete();
+                var count =  await unit_Of_Work.completeAsync();
 
                 if (count > 0)
                 {
@@ -134,9 +134,9 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return Details(id,"Edit");
+            return await Details(id,"Edit");
         }
 
 
@@ -144,7 +144,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department model)
+        public async Task<IActionResult> Edit([FromRoute] int id, Department model)
         {
             if (ModelState.IsValid)
             {
@@ -157,7 +157,7 @@ namespace assignement_3.PL.Controllers
                 //};
                 var department = mapper.Map<Department>(model);
                  unit_Of_Work.DepartmentReprositories.Update(department);
-                var count = unit_Of_Work.complete();
+                var count = await unit_Of_Work.completeAsync();
     
                 if (count > 0)
                 {

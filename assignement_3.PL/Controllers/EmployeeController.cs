@@ -2,6 +2,7 @@
 using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
+using assignement_3.PL.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,16 +23,16 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Index( string? SearchInput)
+        public async Task <IActionResult> Index( string? SearchInput)
         {
             IEnumerable<Employee> employee;
             if (SearchInput == null)
             {
-                 employee = _unit_Of_Work.EmployeeRespositry.GetAll();
+                 employee = await _unit_Of_Work.EmployeeRespositry.GetAll();
             }
             else
             {
-                 employee = _unit_Of_Work.EmployeeRespositry.GetByName(SearchInput);
+                 employee = await _unit_Of_Work.EmployeeRespositry.GetByName(SearchInput);
             }
            
             return View(employee);
@@ -48,10 +49,15 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Create(CreatEmployeeDto model)
+        public async Task <IActionResult> Create(CreatEmployeeDto model)
         {
+
             if (ModelState.IsValid)
             {
+                if (model.Image is not null)
+                {
+                  model.ImageName=  DocumentSetting.UploadFile(model.Image,"images");
+                }
                 //var employee = new Employee()
                 //{
 
@@ -67,9 +73,9 @@ namespace assignement_3.PL.Controllers
                 //    IsDeleted = model.IsDeleted,
                 //    DepartmentId = model.DepartmentId
                 //};
-              var employee =   _mapper.Map<Employee>(model);
-                _unit_Of_Work.EmployeeRespositry.Add(employee);
-                var count = _unit_Of_Work.complete();
+                var employee =   _mapper.Map<Employee>(model);
+                await _unit_Of_Work.EmployeeRespositry.AddAsync(employee);
+                var count = await _unit_Of_Work.completeAsync();
 
                 if (count > 0)
                 {
@@ -83,17 +89,28 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Details(int? id, string viewName = "Details")
+        public async Task <IActionResult> Details(int? id, string viewName = "Details")
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
+            dynamic employee;
+            if (viewName == "Details")
+            {
+               employee = _mapper.Map<Employee>(await _unit_Of_Work.EmployeeRespositry.Get(id.Value));
 
-            var employee = _unit_Of_Work.EmployeeRespositry.Get(id.Value);
+            }
+            else
+            {
+                employee = _mapper.Map<CreatEmployeeDto>(await _unit_Of_Work.EmployeeRespositry.Get(id.Value));
+
+            }
+
             if (employee is null) return NotFound(new
             {
                 statusCode = 404,
                 message = $"Employee With Id :{id} is not found",
             }
             );
+           
             return View(viewName, employee);
         }
 
@@ -101,12 +118,12 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
 
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
-            var employee = _unit_Of_Work.EmployeeRespositry.Get(id.Value);
+            var employee = await _unit_Of_Work.EmployeeRespositry.Get(id.Value);
             if (employee is null) return NotFound(new
             {
                 statusCode = 404,
@@ -119,7 +136,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Employee model)
+        public async Task<IActionResult> Delete([FromRoute] int id, Employee model)
         {
 
             //var employee = new Employee()
@@ -138,11 +155,21 @@ namespace assignement_3.PL.Controllers
             var employee = _mapper.Map<Employee>(model);
 
             _unit_Of_Work.EmployeeRespositry.Delete(employee);
-            var count = _unit_Of_Work.complete();
+            var count = await _unit_Of_Work.completeAsync();
 
             if (count > 0)
                 {
-
+                  if (model.ImageName is not null)
+                    {
+                    try
+                    {
+                        DocumentSetting.DeletFile(model.ImageName, "images");
+                    }
+                    catch (Exception e)
+                    {
+                        BadRequest(error: "Invalid");
+                    }
+                    }
                     return RedirectToAction(nameof(Index));
                 };
             
@@ -151,7 +178,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public Task<IActionResult> Edit(int? id)
         {
             return Details(id, "Edit");
         }
@@ -161,10 +188,20 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee model)
+        public async Task<IActionResult> Edit([FromRoute] int id, CreatEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSetting.UploadFile(model.Image, "images");
+
+                    if (model.ImageName is not null)
+                    {
+                        DocumentSetting.DeletFile(model.ImageName, "images");
+                    }
+
+                }
                 //var employee = new Employee()
                 //{
                 //    Id = id,
@@ -181,16 +218,18 @@ namespace assignement_3.PL.Controllers
                 //    DepartmentId = model.DepartmentId
                 //};
                 var employee = _mapper.Map<Employee>(model);
-
+             employee.Id = id;
               _unit_Of_Work.EmployeeRespositry.Update(employee);
-                var count = _unit_Of_Work.complete();
-
+                var count = await _unit_Of_Work.completeAsync();
+              
+               
                 if (count > 0)
                 {
                     TempData["Message"] = "new Employee is edited";
                     return RedirectToAction(nameof(Index));
                 };
             }
+
             return View();
         }
     }

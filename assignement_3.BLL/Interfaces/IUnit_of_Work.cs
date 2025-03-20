@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace assignement_3.BLL.Interfaces
 {
-    public interface IUnit_of_Work :IDisposable
+    public interface IUnit_of_Work :IAsyncDisposable
     {
         public IDepartmentReprositories DepartmentReprositories { get;  }
         public IEmployeeRespositry EmployeeRespositry { get;  }
-        public int complete();
+        public Task<int> completeAsync();
 
         
 

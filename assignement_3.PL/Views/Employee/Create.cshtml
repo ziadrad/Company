@@ -1,4 +1,4 @@
-﻿@model Employee
+﻿@model CreatDepartmentDto
 @{
     ViewData["Title"] = "Create";
 }
@@ -6,7 +6,7 @@
 <h1>Create Employee</h1>
 
 
-<form class="my-5" asp-action="Create">
+<form class="my-5" asp-action="Create" enctype="multipart/form-data">
 
     <partial name="EmployeePartials/_CreateEditEmployeePartial"></partial>
 </form>

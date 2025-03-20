@@ -9,10 +9,10 @@ namespace assignement_3.BLL.Interfaces
 {
     public interface IGeneralRespo<T> where T : class
     {
-        IEnumerable<T> GetAll();
-        List<T> GetByName(string SearchInput);
-        T? Get(int id);
-        void Add(T model);
+        Task<IEnumerable<T>> GetAll();
+        Task< IEnumerable<T>> GetByName(string SearchInput);
+        Task<T>? Get(int id);
+        Task AddAsync(T model);
         void Update(T model);
         void Delete(T model);
     }

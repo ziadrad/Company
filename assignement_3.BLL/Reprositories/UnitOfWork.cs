@@ -24,8 +24,13 @@ namespace assignement_3.BLL.Reprositories
 
         }
 
-        public int complete() => _context.SaveChanges();
+        public async Task<int> completeAsync() => await _context.SaveChangesAsync();
 
-        public void Dispose() => _context.Dispose();
+
+       
+        public ValueTask DisposeAsync()
+        {
+           return  _context.DisposeAsync();
+        }
     }
 }
