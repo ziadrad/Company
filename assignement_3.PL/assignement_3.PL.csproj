@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Shared\NewFolder\" />
     <Folder Include="wwwroot\files\images\" />
   </ItemGroup>
 
