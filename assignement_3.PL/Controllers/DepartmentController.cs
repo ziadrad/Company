@@ -3,10 +3,12 @@ using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignement_3.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IUnit_of_Work unit_Of_Work;

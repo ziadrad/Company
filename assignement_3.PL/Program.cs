@@ -3,6 +3,7 @@ using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Data.contexts;
 using assignement_3.DAL.Models;
 using assignement_3.PL.Mapping;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace assignement_3.PL
@@ -28,6 +29,13 @@ namespace assignement_3.PL
             
             builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+            builder.Services.AddIdentity < AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<CompanyDbContext>();
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SignIn";
+
+            });
 
             var app = builder.Build();
 
@@ -43,6 +51,8 @@ namespace assignement_3.PL
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
