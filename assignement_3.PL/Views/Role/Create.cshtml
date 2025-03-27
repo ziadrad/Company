@@ -1,0 +1,20 @@
+﻿@model RollToReturnDto
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Role</h1>
+
+
+<form class="my-5" asp-action="Create" enctype="multipart/form-data">
+
+    <partial name="RolePartials/_CreateEditRolePartial"></partial>
+</form>
+
+@section ValidationSertion
+{
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min. js"></script>
+}
+
+

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<RollToReturnDto>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1>All Roles</h1>
+
+
+
+@if (!string.IsNullOrEmpty(@TempData["Message"] as string))
+{
+    <div class="m-3 alert alert-success ">
+        <p>@TempData["Message"]</p>
+    </div>
+}
+
+<partial name="Search_partial_view" />
+
+<a asp-action="Create" asp-controller="Role" class="btn btn-primary my-5">Add Role </a>
+
+@if (Model.Count() > 0)
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+       
+
+                <th>Details</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+           
+
+                <td>
+               
+             </td>
+            <partial name="BtnPartialView" model="@item.Id" />
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="bg-warning rounded">
+        <h4 class="p-3">
+            There is No Employee
+        </h4>
+    </div>
+}
+

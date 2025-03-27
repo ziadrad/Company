@@ -1,0 +1,18 @@
+﻿@model RollToReturnDto
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+
+<form class="my-5" >
+
+
+    <partial name="RolePartials/_DeletDetialsRolePartial"></partial>
+
+  <a asp-action="Edit" class="btn btn-info" asp-route-id="@Model.Id"> Update</a>
+  
+        <a asp-action="Index" A class="btn btn-light"> Back to List </a>
+
+</form>
