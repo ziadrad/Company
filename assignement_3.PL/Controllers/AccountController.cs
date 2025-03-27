@@ -154,5 +154,31 @@ namespace assignement_3.PL.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult ResetPassword(string email,string token)
+        {
+            TempData["email"]=email;
+            TempData["token"]=token;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            if (ModelState.IsValid) {
+                var email = TempData[key: "email"] as string;
+                var token = TempData[key: "token"] as string;
+
+                if (email is null || token is null) return BadRequest(error: "Invalid Operations");
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                    if (result.Succeeded) return RedirectToAction(actionName: "SignIn");
+                }
+                ModelState.AddModelError("","Invalid Reset Password Operation");
+            }
+            return View();
+        }
     }
 }
