@@ -1,0 +1,20 @@
+﻿@model RollToReturnDto
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+
+<form class="my-5" asp-action="Edit" enctype="multipart/form-data">
+    <partial name="RolePartials/_CreateEditRolePartial"></partial>
+
+    <a asp-action="AddOrRemoveUsers" asp-route-id="@Model.Id" class="btn btn-success">Add Or Remove User</a>
+</form>
+
+
+@section ValidationSertion
+        {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min. js"></script>
+}

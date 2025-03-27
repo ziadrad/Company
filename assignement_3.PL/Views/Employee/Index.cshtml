@@ -52,7 +52,7 @@
                         <td> no image</td>
 
                     }
-                    <td>@item.Id</td>
+                    <td>@item.Id.ToString()</td>
                     <td>@item.Name</td>
                     <td>@item.Age</td>
                     <td>@item.Email</td>
@@ -71,7 +71,7 @@
                     else{
                     <td>@item.Department?.Name</td>
                     }
-                    <partial name="BtnPartialView" model="@item.Id" />
+                    <partial name="BtnPartialView" model="@item.Id.ToString()" />
                 </tr>
             }
         </tbody>

@@ -1,0 +1,13 @@
+﻿@model RollToReturnDto
+<div class="my-3">
+    <label asp-for="Name" class="col-form-label">Name</label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+
+</div>
+
+<div>
+    <input type="submit" value="create" class="btn btn-info" />
+    <a asp-action="Index" A class="btn btn-light"> Back to List </a>
+
+</div>
