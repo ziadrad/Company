@@ -1,5 +1,7 @@
-﻿using assignement_3.DAL.Models;
+﻿using System.Security.Policy;
+using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
+using assignement_3.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -107,5 +109,50 @@ namespace assignement_3.PL.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(SignIn));
         }
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> sendEmailForgetPassword(ForgetPasswordDto model) {
+
+            if (ModelState.IsValid) {
+              var user = await _userManager.FindByEmailAsync(model.Email);
+                
+                if (user is not null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                  var result =  EmailSettings.sendEmail(
+                        new Email() {
+                            
+                            body = url,
+                            To = model.Email, 
+                            subject = " Reset Password" ,
+                        
+                        });
+
+                    if (result)
+                    {
+                       return RedirectToAction("CheckYourInbox");
+                    }
+                }
+
+            }
+            ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+            return View("ForgetPassword", model);
+        }
+
+
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
     }
 }

@@ -30,7 +30,8 @@ namespace assignement_3.PL
             builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(typeof(DepartmentProfile));
             builder.Services.AddIdentity < AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<CompanyDbContext>();
+                .AddEntityFrameworkStores<CompanyDbContext>()
+                .AddDefaultTokenProviders();
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/SignIn";
