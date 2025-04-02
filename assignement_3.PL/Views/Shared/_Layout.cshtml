@@ -1,9 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - assignement_3.PL</title>
+    <title>@ViewData["Title"] </title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/assignement_3.PL.styles.css" asp-append-version="true" />
@@ -14,7 +23,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">assignement_3.PL</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -43,13 +52,24 @@
                             <a class="   nav-link text-white btn btn-danger" asp-area="" asp-controller="Account" asp-action="SignOut">SignOut</a>
                         </li>
                     </ul>
-                        
+
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
+
+            @* @if (User.IsInRole("Admin".ToLower())) *@
+            @* { *@
+            @*     <h1>Hi Admin</h1> *@
+            @* } *@
+            @* else *@
+            @* { *@
+            @*     <h1>Hi </h1> *@
+            @* } *@
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
             @RenderBody()
         </main>
     </div>

@@ -11,10 +11,13 @@ namespace assignement_3.PL.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserController(UserManager<AppUser> userManager)
+        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager)
         {
            _userManager = userManager;
+            this.
+                _roleManager = roleManager;
         }
      
         [HttpGet]
@@ -52,14 +55,49 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
+        {
+            IEnumerable<UserToReturnDto> user;
+
+            if (SearchInput == null)
+            {
+                user = _userManager.Users.Select(u => new UserToReturnDto()
+                {
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Roles = _userManager.GetRolesAsync(u).Result,
+                });
+
+            }
+            else
+            {
+                user = _userManager.Users.Select(u => new UserToReturnDto()
+                {
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Roles = _userManager.GetRolesAsync(u).Result,
+                }).Where(u => u.FirstName.ToLower().Contains(SearchInput.ToLower()));
+            }
+
+            return PartialView("UsersPartials/_UserTablePartial", user);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Details(string? id, string viewName = "Details")
         {
+
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
 
             var user = await _userManager.FindByIdAsync(id);
 
             if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
-
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.ToList()[0];
             var dto = new UserToReturnDto()
             {
                 Email = user.Email,
@@ -74,9 +112,15 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string? id)
         {
-            return Details(id, "Edit");
+            if (id is null) return BadRequest(error: "Invalid Id"); // 400
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.ToList()[0];
+            return await Details(id, "Edit");
         }
 
 
@@ -86,6 +130,9 @@ namespace assignement_3.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] string id, UserToReturnDto model)
         {
+            var role = await _roleManager.FindByIdAsync(model.Role);
+            if (role is null)
+                return NotFound();
             if (ModelState.IsValid)
             {
 
@@ -100,8 +147,11 @@ namespace assignement_3.PL.Controllers
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
+                ;
 
-                    return RedirectToAction(nameof(Index));
+                await _userManager.RemoveFromRolesAsync(user,  _userManager.GetRolesAsync(user).Result);
+                await _userManager.AddToRoleAsync(user, role.Name);
+                return RedirectToAction(nameof(Index));
             }
 
             return View();
@@ -111,8 +161,14 @@ namespace assignement_3.PL.Controllers
         public async Task<IActionResult> Delete(string? id)
         {
 
-           
-            
+            if (id is null) return BadRequest(error: "Invalid Id"); // 400
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.ToList()[0];
+
+
             return await Details(id, "Delete");
         }
 
@@ -120,6 +176,7 @@ namespace assignement_3.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete([FromRoute] string id, UserToReturnDto model)
         {
+
             if (ModelState.IsValid)
             {
 

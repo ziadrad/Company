@@ -1,7 +1,10 @@
 ﻿@model SignUpDto
+@inject RoleManager<IdentityRole> _rolemanager;
+
 @{
 	ViewData["Title"] = "SignUp";
 	Layout = "~/Views/Shared/_AuthLauout.cshtml";
+
 }
 
 
@@ -18,6 +21,20 @@
 			<input class="text email" asp-for="Email" placeholder="Email" required="">
 			<input class="text" asp-for="Password" placeholder="Password" required="">
 			<input class="text w3lpass" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
+
+			<select class="form-select w-100 p-4" asp-for = "Role" >
+				<option selected>Select user Role </option>
+
+			@foreach (var role in _rolemanager.Roles.Select(u => new RollToReturnDto()
+			{
+
+				Id = u.Id,
+				Name = u.Name,
+			})){
+					<option value="@role.Id">@role.Name </option>
+			}
+
+			</select>
 			<div class="wthree-text">
 				<label class="anim">
 					<input type="checkbox" asp-for="IsAgree" class="checkbox" required="">

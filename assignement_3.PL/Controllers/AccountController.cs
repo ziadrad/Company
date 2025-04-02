@@ -2,6 +2,7 @@
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using assignement_3.PL.Helpers;
+using assignement_3.PL.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -12,11 +13,17 @@ namespace assignement_3.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMailServices _mailServices;
+        private readonly ITwilioServices _twilioServices;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailServices mailServices,ITwilioServices twilioServices,RoleManager<IdentityRole> roleManager)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
+            _mailServices = mailServices;
+            _twilioServices = twilioServices;
+            this._roleManager = roleManager;
         }
         [HttpGet]      
         
@@ -26,9 +33,12 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpPost]
-        // P@ssWørd
+        // Pass011@
         public async Task< IActionResult> SignUp( SignUpDto model)
         {
+            var role = await _roleManager.FindByIdAsync(model.Role);
+            if (role is null)
+                return NotFound();
             if (ModelState.IsValid) {
 
                 var user = await _userManager.FindByNameAsync(model.UserName);
@@ -49,6 +59,7 @@ namespace assignement_3.PL.Controllers
                         var task = await _userManager.CreateAsync(user, model.Password);
                         if (task.Succeeded)
                         {
+                            await _userManager.AddToRoleAsync(user, role.Name);
                             return RedirectToAction("SignIn");
                         }
                         foreach (var erorr in task.Errors)
@@ -89,6 +100,7 @@ namespace assignement_3.PL.Controllers
                         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.Remember,false);
                         if (result.Succeeded)
                         {
+                          
                             return RedirectToAction(nameof(HomeController.Index), "Home");
                         }
                     }
@@ -115,6 +127,68 @@ namespace assignement_3.PL.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult ForgetPassword(ForgetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.action == "EmailMethod")
+                {
+                    return RedirectToActionPreserveMethod("sendEmailForgetPassword", "Account" ,model);
+                }
+                else
+                {
+                    return RedirectToActionPreserveMethod("sendSmsForgetPassword", "Account", model);
+                }
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> sendSmsForgetPassword(ForgetPasswordDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user is not null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                    try
+                    {
+                        _twilioServices.SendSms(
+                               new SMS()
+                               {
+
+                                   body = url,
+                                   To = user.PhoneNumber,
+
+                               });
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+                        return View("ForgetPassword", model);
+                    }
+
+                    return RedirectToAction("CheckYourPhone");
+
+                }
+
+            }
+            ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+            return View("ForgetPassword", model);
+        }
+
+        [HttpGet]
+        public IActionResult CheckYourPhone()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> sendEmailForgetPassword(ForgetPasswordDto model) {
@@ -127,19 +201,25 @@ namespace assignement_3.PL.Controllers
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                     var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
-                  var result =  EmailSettings.sendEmail(
-                        new Email() {
-                            
-                            body = url,
-                            To = model.Email, 
-                            subject = " Reset Password" ,
-                        
-                        });
-
-                    if (result)
+                    try
                     {
-                       return RedirectToAction("CheckYourInbox");
+                        _mailServices.sendEmail(
+                               new Email()
+                               {
+
+                                   body = url,
+                                   To = model.Email,
+                                   subject = " Reset Password",
+
+                               });
                     }
+                    catch (Exception ex) {
+                        ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+                        return View("ForgetPassword", model);
+                    }
+                 
+                       return RedirectToAction("CheckYourInbox");
+                    
                 }
 
             }
@@ -153,6 +233,8 @@ namespace assignement_3.PL.Controllers
         {
             return View();
         }
+
+   
 
         [HttpGet]
         public IActionResult ResetPassword(string email,string token)
