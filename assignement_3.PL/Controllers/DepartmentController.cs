@@ -24,7 +24,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public async Task <IActionResult> Index(string? SearchInput)
+        public async Task <IActionResult> Search(string? SearchInput)
         {
             IEnumerable<Department> department;
             if (SearchInput == null)
@@ -36,9 +36,25 @@ namespace assignement_3.PL.Controllers
                 department = await unit_Of_Work.DepartmentReprositories.GetByName(SearchInput);
             }
 
-            return View(department);
+            return PartialView("DepartmentPartialViews/_DepartmentTablePartialView", department);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string? SearchInput)
+        {
+            IEnumerable<Department> department;
+            if (SearchInput == null)
+            {
+                department = await unit_Of_Work.DepartmentReprositories.GetAll();
+            }
+            else
+            {
+                department = await unit_Of_Work.DepartmentReprositories.GetByName(SearchInput);
+            }
+
+            return View(department);
+        }
 
         [HttpGet]
         public IActionResult Create()

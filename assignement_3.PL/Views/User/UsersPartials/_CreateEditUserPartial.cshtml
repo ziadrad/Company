@@ -1,4 +1,9 @@
 ﻿@model UserToReturnDto
+@inject RoleManager<IdentityRole> _rolemanager;
+
+@{
+    var roles = ViewData["userRole"] as string;
+}
 <div class="my-3">
     <label asp-for="UserName" class="col-form-label">Name</label>
     <input   asp-for="UserName" class="form-control" />
@@ -21,6 +26,34 @@
     <label asp-for="Email" class="col-form-label">Email</label>
     <input   asp-for="Email" class="form-control" />
     <span asp-validation-for="Email" class="text-danger"></span>
+
+</div>
+
+<div class="my-3">
+    <label asp-for="Role" class="col-form-label">Role</label>
+    <select class="form-select w-100 " asp-for="Role">
+
+        @foreach (var role in _rolemanager.Roles.Select(u => new RollToReturnDto()
+         {
+
+             Id = u.Id,
+             Name = u.Name,
+         }).Where(u => u.Name != roles))
+        {
+            <option value="@role.Id">@role.Name </option>
+        }
+        @foreach (var role in _rolemanager.Roles.Select(u => new RollToReturnDto()
+         {
+
+             Id = u.Id,
+             Name = u.Name,
+         }).Where(u => u.Name == roles))
+        {
+            <option selected value="@role.Id">@role.Name </option>
+        }
+
+    </select>
+
 
 </div>
 

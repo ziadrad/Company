@@ -25,21 +25,29 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-        public async Task <IActionResult> Index( string? SearchInput)
+        public async Task <IActionResult> Index( )
+        {
+            IEnumerable<Employee> employee;
+                 employee = await _unit_Of_Work.EmployeeRespositry.GetAll();
+
+            return View(employee);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
         {
             IEnumerable<Employee> employee;
             if (SearchInput == null)
             {
-                 employee = await _unit_Of_Work.EmployeeRespositry.GetAll();
+                employee = await _unit_Of_Work.EmployeeRespositry.GetAll();
             }
             else
             {
-                 employee = await _unit_Of_Work.EmployeeRespositry.GetByName(SearchInput);
+                employee = await _unit_Of_Work.EmployeeRespositry.GetByName(SearchInput);
             }
-           
-            return View(employee);
-        }
 
+            return PartialView("_EmployeeTablePartialView", employee);
+        }
 
 
         [HttpGet]

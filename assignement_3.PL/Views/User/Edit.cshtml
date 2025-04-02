@@ -1,6 +1,9 @@
 ﻿@model UserToReturnDto
+@inject RoleManager<IdentityRole> _rolemanager;
+
 @{
     ViewData["Title"] = "Edit";
+    var roles = ViewData["userRole"] as string;
 }
 
 <h1>Edit</h1>
@@ -8,6 +11,7 @@
 
 <form class="my-5" asp-action="Edit" enctype="multipart/form-data">
     <partial name="UsersPartials/_CreateEditUserPartial"></partial>
+  
 
 </form>
 

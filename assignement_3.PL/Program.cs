@@ -2,6 +2,8 @@ using assignement_3.BLL.Interfaces;
 using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Data.contexts;
 using assignement_3.DAL.Models;
+using assignement_3.PL.Helpers;
+using assignement_3.PL.Interface;
 using assignement_3.PL.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +15,23 @@ namespace assignement_3.PL
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.Name = ".AdventureWorks.Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentReprositories, DepartmentReprositories>();
             builder.Services.AddScoped<IEmployeeRespositry, EmployeeResporitory>();
             builder.Services.AddScoped<IUnit_of_Work, UnitOfWork>();
+            builder.Services.AddScoped<IMailServices,MailServices>();
+            builder.Services.AddScoped<ITwilioServices, TwilioService>();
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             
@@ -32,11 +45,16 @@ namespace assignement_3.PL
             builder.Services.AddIdentity < AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<CompanyDbContext>()
                 .AddDefaultTokenProviders();
+
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/SignIn";
+           
 
             });
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
+
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
 
             var app = builder.Build();
 
@@ -52,11 +70,12 @@ namespace assignement_3.PL
             app.UseStaticFiles();
 
             app.UseRouting();
+          
 
             app.UseAuthentication();
 
             app.UseAuthorization();
-
+            app.UseSession();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

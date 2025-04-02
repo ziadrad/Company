@@ -1,4 +1,10 @@
-﻿namespace assignement_3.PL.Helpers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace assignement_3.DAL.Models
 {
     public class Email
     {
