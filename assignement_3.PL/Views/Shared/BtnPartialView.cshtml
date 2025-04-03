@@ -1,10 +1,33 @@
 ﻿@model string
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@{
+    var user = await UserManager.FindByIdAsync(User.Claims.FirstOrDefault().Value);
+    var roles = await UserManager.GetRolesAsync(user);
+    var getrole = await RoleManager.FindByNameAsync(roles.First());
+    var role_claims = await RoleManager.GetClaimsAsync(getrole);
+
+
+}
 <td>
+
     <a asp-action="Details" class="btn btn-warning" asp-route-id="@Model"> Details</a>
+
+
 </td>
 <td>
-    <a asp-action="Edit" class="btn btn-info" asp-route-id="@Model"> Update</a>
+    @if (role_claims.Where(c => c.Type == "EditPermission").FirstOrDefault().Value.ToLower() == "true")
+    {
+        <a asp-action="Edit" class="btn btn-info" asp-route-id="@Model"> Update</a>
+    }
+
 </td>
 <td>
-    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@Model"> Delete</a>
+    @if (role_claims.Where(c => c.Type == "DeletePermission").FirstOrDefault().Value.ToLower() == "true")
+    {
+        <a asp-action="Delete" class="btn btn-danger" asp-route-id="@Model"> Delete</a>
+    }
 </td>

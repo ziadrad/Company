@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using assignement_3.BLL.Interfaces;
 using assignement_3.BLL.Reprositories;
 using assignement_3.DAL.Data.contexts;
@@ -46,8 +47,26 @@ namespace assignement_3.PL
                 .AddEntityFrameworkStores<CompanyDbContext>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.AddAuthorization(options =>
+                options.AddPolicy("AddPolicy",
+                policy => policy.RequireClaim("CreatePermission", "True")
+        
+                ));
+
+            builder.Services.AddAuthorization(options =>
+                options.AddPolicy("editPolicy",
+                policy => policy.RequireClaim("EditPermission", "False")
+
+                ));
+
+            builder.Services.AddAuthorization(options =>
+                 options.AddPolicy("deletePolicy",
+                 policy => policy.RequireClaim("DeletePermission", "True")
+
+                 ));
             builder.Services.ConfigureApplicationCookie(config =>
             {
+                
                 config.LoginPath = "/Account/SignIn";
            
 

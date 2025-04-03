@@ -4,6 +4,7 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace assignement_3.PL.Controllers
@@ -11,14 +12,20 @@ namespace assignement_3.PL.Controllers
     [Authorize]
     public class DepartmentController : Controller
     {
+
         private readonly IUnit_of_Work unit_Of_Work;
         private readonly IMapper mapper;
-
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private static string createroles = " " ;
         public DepartmentController(IUnit_of_Work unit_Of_Work, IMapper mapper)
         {
         
             this.unit_Of_Work = unit_Of_Work;
             this.mapper = mapper;
+
+
         }
 
 
@@ -57,6 +64,7 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AddPolicy")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +73,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "AddPolicy")]
         public async Task<IActionResult> Create(CreatDepartmentDto model)
         {
             if (ModelState.IsValid)
@@ -90,6 +99,8 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+       
+
         public async Task<IActionResult> Details( int? id , string viewName= "Details")
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
@@ -108,6 +119,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "deletePolicy")]
         public async Task<IActionResult> Delete(int? id)
         {
 
@@ -152,6 +164,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "editPolicy")]
         public async Task<IActionResult> Edit(int? id)
         {
             return await Details(id,"Edit");

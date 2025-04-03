@@ -2,9 +2,19 @@
 
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
-
+@inject RoleManager<IdentityRole> RoleManager
 @{
     ViewData["Title"] = "Home Page";
+    var user = await UserManager.FindByIdAsync(User.Claims.FirstOrDefault().Value);
+    var roles = await UserManager.GetRolesAsync(user);
+    var getrole = await RoleManager.FindByNameAsync(roles.First());
+    var role_claims = await RoleManager.GetClaimsAsync(getrole);
+    //var result = User.Claims.ToArray()[2];
+
+    //var role = rol;
+
+    // var roleclaims = role; 
+
 }
 
 <!DOCTYPE html>
@@ -37,13 +47,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
-                        </li>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Role</a>
-                        </li>
+                        
+                        @if (role_claims.Where(c => c.Type == "ShowUserPage".ToLower()).FirstOrDefault().Value.ToLower() == "true")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                            </li>
+                        }
+
+                        @if (role_claims.Where(c => c.Type == "ShowRolePage".ToLower()).FirstOrDefault().Value.ToLower() == "true")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Role</a>
+                            </li>
+                        }
                     </ul>
 
 
@@ -57,7 +74,7 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid">
+    <div class="container">
         <main role="main" class="pb-3">
 
             @* @if (User.IsInRole("Admin".ToLower())) *@
@@ -68,6 +85,9 @@
             @* { *@
             @*     <h1>Hi </h1> *@
             @* } *@
+
+           
+            
             <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
             @RenderBody()

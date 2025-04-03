@@ -6,6 +6,48 @@
 
 </div>
 
+<div class="my-3">
+
+    <input class="form-check-input" asp-for="CreatePermission" type="checkbox"  >
+    <label class="form-check-label" asp-for="CreatePermission" >
+        CreatePermission
+    </label>
+
+</div>
+
+<div class="my-3">
+
+    <input class="form-check-input" asp-for="EditPermission" type="checkbox" >
+    <label class="form-check-label" asp-for="EditPermission">
+        EditPermission
+    </label>
+
+</div>
+<div class="my-3">
+
+    <input class="form-check-input" asp-for="DeletePermission" type="checkbox" >
+    <label class="form-check-label" asp-for="DeletePermission">
+        DeletePermission
+    </label>
+
+</div>
+<div class="my-3">
+
+    <input class="form-check-input" asp-for="ShowRolePage" type="checkbox" >
+    <label class="form-check-label" asp-for="ShowRolePage">
+        ShowRolePage
+    </label>
+
+</div>
+<div class="my-3">
+
+    <input class="form-check-input" asp-for="ShowUserPage" type="checkbox" >
+    <label class="form-check-label" asp-for="ShowUserPage">
+        ShowUserPage
+    </label>
+
+</div>
+
 <div>
     <input type="submit" value="create" class="btn btn-info" />
     <a asp-action="Index" A class="btn btn-light"> Back to List </a>
