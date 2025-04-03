@@ -51,6 +51,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "AddPolicy")]
         public IActionResult Create()
         {
             return View();
@@ -59,6 +60,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "AddPolicy")]
         public async Task <IActionResult> Create(CreatEmployeeDto model)
         {
 
@@ -128,6 +130,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "deletePolicy")]
         public async Task<IActionResult> Delete(int? id)
         {
 
@@ -188,6 +191,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
+       // [Authorize(Policy = "editPolicy")]
         public Task<IActionResult> Edit(int? id)
         {
             return Details(id, "Edit");

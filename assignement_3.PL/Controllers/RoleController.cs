@@ -1,4 +1,5 @@
-﻿using assignement_3.BLL.Interfaces;
+﻿using System.Security.Claims;
+using assignement_3.BLL.Interfaces;
 using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using assignement_3.PL.Helpers;
@@ -6,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace assignement_3.PL.Controllers
 {
@@ -54,12 +56,20 @@ namespace assignement_3.PL.Controllers
 
             var rolls = await _roleManager.FindByIdAsync(id);
 
+
             if (rolls is null) return NotFound(new { statusCode = 404, message = $"rolls With Id :{id} is not found" });
+
+         var claims =   await _roleManager.GetClaimsAsync(rolls);
 
             var dto = new RollToReturnDto()
             {
                 Id = rolls.Id,
                 Name = rolls.Name,
+                EditPermission =  claims.Where(c => c.Type == "EditPermission").First().Value.ToLower() == "true" ,
+                CreatePermission = claims.Where(c => c.Type == "CreatePermission").First().Value.ToLower() == "true",
+                DeletePermission = claims.Where(c => c.Type == "DeletePermission").First().Value.ToLower() == "true",
+                ShowRolePage = claims.Where(c => c.Type == "ShowRolePage".ToLower()).First().Value.ToLower() == "true",
+                ShowUserPage = claims.Where(c => c.Type == "ShowUserPage".ToLower()).First().Value.ToLower() == "true",
             };
 
             return View(viewName, dto);
@@ -87,14 +97,34 @@ namespace assignement_3.PL.Controllers
                 if (role is null) return BadRequest(error: "Invalid Operations !");
 
                 var rollsResult = await _roleManager.FindByNameAsync(model.Name);
-                if (rollsResult is null)
+                if (rollsResult is not null)
                 {
                     role.Name = model.Name;
 
                     var result = await _roleManager.UpdateAsync(role);
-                    if (result.Succeeded)
 
+
+
+                    if (result.Succeeded)
+                    {
+                      var claims = await _roleManager.GetClaimsAsync(role);
+                        foreach (var claim in claims)
+                        {
+                            await _roleManager.RemoveClaimAsync(role, claim);
+
+                        }
+
+                        var CreatePermission = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.CreatePermission), model.CreatePermission.ToString()));
+                        var EditPermission = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.EditPermission), model.EditPermission.ToString()));
+                        var DeletePermission = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.DeletePermission), model.DeletePermission.ToString()));
+                        var ShowRolePage = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.ShowRolePage).ToLower(), model.ShowRolePage.ToString()));
+                        var ShowUserPage = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.ShowUserPage).ToLower(), model.ShowUserPage.ToString()));
+                        if (CreatePermission.Succeeded && EditPermission.Succeeded && DeletePermission.Succeeded && ShowRolePage.Succeeded && ShowUserPage.Succeeded)
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
                         return RedirectToAction(nameof(Index));
+                    }
                 }
 
              
@@ -158,8 +188,19 @@ namespace assignement_3.PL.Controllers
                     };
                     var result = await _roleManager.CreateAsync(role);
                     if (result.Succeeded)
+
                     {
-                        return RedirectToAction(nameof(Index));
+                       
+                      var  CreatePermission = await  _roleManager.AddClaimAsync(role, new Claim(nameof(model.CreatePermission), model.CreatePermission.ToString()));
+                        var EditPermission = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.EditPermission), model.EditPermission.ToString()));
+                        var DeletePermission = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.DeletePermission), model.DeletePermission.ToString()));
+                        var ShowRolePage = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.ShowRolePage).ToLower(), model.ShowRolePage.ToString()));
+                        var ShowUserPage = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.ShowUserPage).ToLower(), model.ShowUserPage.ToString()));
+                        if (CreatePermission.Succeeded && EditPermission.Succeeded && DeletePermission.Succeeded && ShowRolePage.Succeeded && ShowUserPage.Succeeded)
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
+                      
                     }
                     }
             }
