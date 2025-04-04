@@ -57,6 +57,7 @@ namespace assignement_3.PL.Controllers
                             FirstName = model.FirstName,
                             LastName = model.LastName,
                             Email = model.Email,
+                            PhoneNumber = "+20"+ model.PhonNumber,
                             isAgree = model.IsAgree,
 
                         };
@@ -84,6 +85,13 @@ namespace assignement_3.PL.Controllers
             return View();
         }
 
+        [HttpGet]
+
+        public IActionResult AccessDenied()
+        {
+            
+            return View();
+        }
 
         [HttpGet]
 

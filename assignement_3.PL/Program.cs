@@ -77,7 +77,7 @@ namespace assignement_3.PL
        
             builder.Services.ConfigureApplicationCookie(config =>
             {
-                
+                config.AccessDeniedPath = "/Account/AccessDenied";
                 config.LoginPath = "/Account/SignIn";
            
 
