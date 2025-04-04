@@ -15,11 +15,13 @@ namespace assignement_3.PL.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public RoleController(RoleManager<IdentityRole> RoleManager,UserManager<AppUser> userManager)
+        public RoleController(RoleManager<IdentityRole> RoleManager,UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _roleManager = RoleManager;
          _userManager = userManager;
+            this._signInManager = signInManager;
         }
      
         [HttpGet]
@@ -121,6 +123,7 @@ namespace assignement_3.PL.Controllers
                         var ShowUserPage = await _roleManager.AddClaimAsync(role, new Claim(nameof(model.ShowUserPage).ToLower(), model.ShowUserPage.ToString()));
                         if (CreatePermission.Succeeded && EditPermission.Succeeded && DeletePermission.Succeeded && ShowRolePage.Succeeded && ShowUserPage.Succeeded)
                         {
+                        
                             return RedirectToAction(nameof(Index));
                         }
                         return RedirectToAction(nameof(Index));

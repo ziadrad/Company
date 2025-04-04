@@ -3,6 +3,7 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using assignement_3.PL.Helpers;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,14 @@ namespace assignement_3.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager,SignInManager<AppUser> signInManager)
         {
            _userManager = userManager;
             this.
                 _roleManager = roleManager;
+            this._signInManager = signInManager;
         }
      
         [HttpGet]
@@ -33,6 +36,7 @@ namespace assignement_3.PL.Controllers
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Id = u.Id,
+                    PhonNumber = u.PhoneNumber,
                     UserName= u.UserName,
                     Roles = _userManager.GetRolesAsync(u).Result,
                 });
@@ -46,6 +50,7 @@ namespace assignement_3.PL.Controllers
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Id = u.Id,
+                    PhonNumber = u.PhoneNumber,
                     UserName = u.UserName,
                     Roles = _userManager.GetRolesAsync(u).Result,
                 }).Where(u=>u.FirstName.ToLower().Contains(SearchInput.ToLower()));
@@ -67,6 +72,7 @@ namespace assignement_3.PL.Controllers
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Id = u.Id,
+                    PhonNumber = u.PhoneNumber,
                     UserName = u.UserName,
                     Roles = _userManager.GetRolesAsync(u).Result,
                 });
@@ -81,6 +87,7 @@ namespace assignement_3.PL.Controllers
                     LastName = u.LastName,
                     Id = u.Id,
                     UserName = u.UserName,
+                    PhonNumber = u.PhoneNumber,
                     Roles = _userManager.GetRolesAsync(u).Result,
                 }).Where(u => u.FirstName.ToLower().Contains(SearchInput.ToLower()));
             }
@@ -105,6 +112,7 @@ namespace assignement_3.PL.Controllers
                 LastName = user.LastName,
                 Id = user.Id,
                 UserName = user.UserName,
+                PhonNumber = user.PhoneNumber,
                 Roles = _userManager.GetRolesAsync(user).Result,
             };
 
@@ -112,6 +120,7 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "editPolicy")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
@@ -128,6 +137,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Edit([FromRoute] string id, UserToReturnDto model)
         {
             var role = await _roleManager.FindByIdAsync(model.Role);
@@ -144,20 +154,21 @@ namespace assignement_3.PL.Controllers
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
-
+                user.PhoneNumber = "+20" + model.PhonNumber;
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
-                ;
-
-                await _userManager.RemoveFromRolesAsync(user,  _userManager.GetRolesAsync(user).Result);
-                await _userManager.AddToRoleAsync(user, role.Name);
-                return RedirectToAction(nameof(Index));
+                {
+                    await _userManager.RemoveFromRolesAsync(user, _userManager.GetRolesAsync(user).Result);
+                    await _userManager.AddToRoleAsync(user, role.Name);
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             return View();
         }
 
         [HttpGet]
+        [Authorize(Policy = "deletePolicy")]
         public async Task<IActionResult> Delete(string? id)
         {
 

@@ -6,8 +6,12 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.Helpers;
 using assignement_3.PL.Interface;
 using assignement_3.PL.Mapping;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace assignement_3.PL
 {
@@ -36,8 +40,13 @@ namespace assignement_3.PL
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")
-
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+            }
             )
             );
             
@@ -47,26 +56,28 @@ namespace assignement_3.PL
                 .AddEntityFrameworkStores<CompanyDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthorization(options =>
+            builder.Services.AddAuthorization(options => {
                 options.AddPolicy("AddPolicy",
-                policy => policy.RequireClaim("CreatePermission", "True")
-        
-                ));
+                policy => { policy.RequireClaim("CreatePermission", "True"); }
 
-            builder.Services.AddAuthorization(options =>
-                options.AddPolicy("editPolicy",
-                policy => policy.RequireClaim("EditPermission", "False")
 
-                ));
 
-            builder.Services.AddAuthorization(options =>
-                 options.AddPolicy("deletePolicy",
-                 policy => policy.RequireClaim("DeletePermission", "True")
+                );
+            options.AddPolicy("editPolicy",
+           policy => policy.RequireClaim("EditPermission", "True")
 
-                 ));
+           );
+
+                options.AddPolicy("deletePolicy",
+                                policy => policy.RequireClaim("DeletePermission", "True")
+
+                                );
+        });
+
+       
             builder.Services.ConfigureApplicationCookie(config =>
             {
-                
+                config.AccessDeniedPath = "/Account/AccessDenied";
                 config.LoginPath = "/Account/SignIn";
            
 
@@ -74,7 +85,24 @@ namespace assignement_3.PL
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
 
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+              //  options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+                .AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
+                {
+                    options.ClientId = builder.Configuration["Authentication:Facebook:ClientId"]!;
+                    options.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"]!;
+                    // options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                })
+              .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+              {
+                  options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+                  options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+                 // options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+              });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
