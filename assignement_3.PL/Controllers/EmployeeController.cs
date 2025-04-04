@@ -191,7 +191,7 @@ namespace assignement_3.PL.Controllers
 
 
         [HttpGet]
-       // [Authorize(Policy = "editPolicy")]
+        [Authorize(Policy = "editPolicy")]
         public Task<IActionResult> Edit(int? id)
         {
             return Details(id, "Edit");

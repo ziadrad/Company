@@ -35,7 +35,7 @@ namespace assignement_3.BLL.Reprositories
             {
                 return await context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T ;
             }
-            return (T) await context.Set<T>().FindAsync(id) ;
+            return  await context.Set<T>().FindAsync(id) ;
         }
 
         public async Task<IEnumerable<T>>? GetByName(string name)

@@ -1,15 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
 @{
     ViewData["Title"] = "Home Page";
-    var user = await UserManager.FindByIdAsync(User.Claims.FirstOrDefault().Value);
+    var user = await UserManager.FindByNameAsync(User.Identity.Name);
+    await SignInManager.RefreshSignInAsync(user);
     var roles = await UserManager.GetRolesAsync(user);
-    var getrole = await RoleManager.FindByNameAsync(roles.First());
-    var role_claims = await RoleManager.GetClaimsAsync(getrole);
-    //var result = User.Claims.ToArray()[2];
+    IdentityRole? getrole;
+    IList<Claim> role_claims = new List<Claim>();
+    if (roles.Count !=0)
+    {
+        getrole = await RoleManager.FindByNameAsync(roles.First());
+        role_claims = await RoleManager.GetClaimsAsync(getrole);
+    }
+
+
+
 
     //var role = rol;
 
@@ -31,7 +40,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">assignement_3.PL</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ZiadRady Mvc</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -47,19 +56,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
                         </li>
-                        
-                        @if (role_claims.Where(c => c.Type == "ShowUserPage".ToLower()).FirstOrDefault().Value.ToLower() == "true")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
-                            </li>
-                        }
 
-                        @if (role_claims.Where(c => c.Type == "ShowRolePage".ToLower()).FirstOrDefault().Value.ToLower() == "true")
+                        @if (role_claims.Count != 0)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Role</a>
-                            </li>
+                            @if (role_claims?.Where(c => c.Type == "ShowUserPage".ToLower())?.FirstOrDefault()?.Value.ToLower() == "true")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                                </li>
+                            }
+
+                            @if (role_claims?.Where(c => c.Type == "ShowRolePage".ToLower())?.FirstOrDefault()?.Value.ToLower() == "true")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Role</a>
+                                </li>
+                            }
+
                         }
                     </ul>
 
@@ -96,7 +109,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - assignement_3.PL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - ZiadRady Mvc -
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

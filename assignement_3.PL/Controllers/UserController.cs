@@ -12,12 +12,14 @@ namespace assignement_3.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager,SignInManager<AppUser> signInManager)
         {
            _userManager = userManager;
             this.
                 _roleManager = roleManager;
+            this._signInManager = signInManager;
         }
      
         [HttpGet]
@@ -147,11 +149,11 @@ namespace assignement_3.PL.Controllers
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
-                ;
-
-                await _userManager.RemoveFromRolesAsync(user,  _userManager.GetRolesAsync(user).Result);
-                await _userManager.AddToRoleAsync(user, role.Name);
-                return RedirectToAction(nameof(Index));
+                {
+                    await _userManager.RemoveFromRolesAsync(user, _userManager.GetRolesAsync(user).Result);
+                    await _userManager.AddToRoleAsync(user, role.Name);
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             return View();

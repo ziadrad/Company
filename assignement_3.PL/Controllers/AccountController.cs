@@ -37,8 +37,7 @@ namespace assignement_3.PL.Controllers
         public async Task< IActionResult> SignUp( SignUpDto model)
         {
             var role = await _roleManager.FindByIdAsync(model.Role);
-            if (role is null)
-                return NotFound();
+          
             if (ModelState.IsValid) {
 
                 var user = await _userManager.FindByNameAsync(model.UserName);
@@ -59,7 +58,11 @@ namespace assignement_3.PL.Controllers
                         var task = await _userManager.CreateAsync(user, model.Password);
                         if (task.Succeeded)
                         {
-                            await _userManager.AddToRoleAsync(user, role.Name);
+                            if (role is not null)
+                            {
+                                await _userManager.AddToRoleAsync(user, role.Name);
+                            }
+                            
                             return RedirectToAction("SignIn");
                         }
                         foreach (var erorr in task.Errors)
@@ -70,7 +73,7 @@ namespace assignement_3.PL.Controllers
                     
                 }
 
-                ModelState.AddModelError("", "invalid sign in");
+                ModelState.AddModelError("", "invalid sign up");
 
             }
             return View();

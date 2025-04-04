@@ -47,23 +47,25 @@ namespace assignement_3.PL
                 .AddEntityFrameworkStores<CompanyDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthorization(options =>
+            builder.Services.AddAuthorization(options => {
                 options.AddPolicy("AddPolicy",
-                policy => policy.RequireClaim("CreatePermission", "True")
-        
-                ));
+                policy => { policy.RequireClaim("CreatePermission", "True"); }
 
-            builder.Services.AddAuthorization(options =>
-                options.AddPolicy("editPolicy",
-                policy => policy.RequireClaim("EditPermission", "False")
 
-                ));
 
-            builder.Services.AddAuthorization(options =>
-                 options.AddPolicy("deletePolicy",
-                 policy => policy.RequireClaim("DeletePermission", "True")
+                );
+            options.AddPolicy("editPolicy",
+           policy => policy.RequireClaim("EditPermission", "True")
 
-                 ));
+           );
+
+                options.AddPolicy("deletePolicy",
+                                policy => policy.RequireClaim("DeletePermission", "True")
+
+                                );
+        });
+
+       
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 

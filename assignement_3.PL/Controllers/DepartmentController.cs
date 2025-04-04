@@ -10,25 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace assignement_3.PL.Controllers
 {
     [Authorize]
-    public class DepartmentController : Controller
+    public class DepartmentController(IUnit_of_Work unit_Of_Work, IMapper mapper) : Controller
     {
 
-        private readonly IUnit_of_Work unit_Of_Work;
-        private readonly IMapper mapper;
-        private readonly UserManager<AppUser> userManager;
-        private readonly SignInManager<AppUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private static string createroles = " " ;
-        public DepartmentController(IUnit_of_Work unit_Of_Work, IMapper mapper)
-        {
-        
-            this.unit_Of_Work = unit_Of_Work;
-            this.mapper = mapper;
-
-
-        }
-
-
+        private readonly IUnit_of_Work unit_Of_Work = unit_Of_Work;
+        private readonly IMapper mapper = mapper;
+        private readonly UserManager<AppUser>? userManager;
+        private readonly SignInManager<AppUser>? signInManager;
+        private readonly RoleManager<IdentityRole>? roleManager;
 
         [HttpGet]
         public async Task <IActionResult> Search(string? SearchInput)
