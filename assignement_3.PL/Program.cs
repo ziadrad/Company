@@ -6,6 +6,9 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.Helpers;
 using assignement_3.PL.Interface;
 using assignement_3.PL.Mapping;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,7 +79,18 @@ namespace assignement_3.PL
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
 
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+              //  options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+              .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+              {
+                  options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+                  options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+                 // options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+              });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -6,9 +6,14 @@
 @inject RoleManager<IdentityRole> RoleManager
 @{
     ViewData["Title"] = "Home Page";
+    ViewContext.ViewBag.test = "myValue";
     var user = await UserManager.FindByNameAsync(User.Identity.Name);
-    await SignInManager.RefreshSignInAsync(user);
-    var roles = await UserManager.GetRolesAsync(user);
+    IList<string> roles = new List<string>();
+    if(user is not null){
+        await SignInManager.RefreshSignInAsync(user);
+         roles = await UserManager.GetRolesAsync(user);
+    }
+
     IdentityRole? getrole;
     IList<Claim> role_claims = new List<Claim>();
     if (roles.Count !=0)
@@ -35,6 +40,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/assignement_3.PL.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"  />
 </head>
 <body>
     <header>
@@ -102,7 +108,9 @@
            
             
             <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
+     
             @RenderBody()
         </main>
     </div>

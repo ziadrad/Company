@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 
 namespace assignement_3.PL.dto
 {
@@ -15,5 +16,8 @@ namespace assignement_3.PL.dto
         [Required(ErrorMessage = "agree policy is Required ! !")]
 
         public bool Remember { get; set; }
+        public string? ReturnUrl { get; set; }
+        // AuthenticationScheme is in Microsoft.AspNetCore.Authentication namespace
+        public IList<AuthenticationScheme>? ExternalLogins { get; set; }
     }
 }

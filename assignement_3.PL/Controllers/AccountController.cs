@@ -3,9 +3,13 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using assignement_3.PL.Helpers;
 using assignement_3.PL.Interface;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace assignement_3.PL.Controllers
 {
@@ -17,7 +21,7 @@ namespace assignement_3.PL.Controllers
         private readonly ITwilioServices _twilioServices;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailServices mailServices,ITwilioServices twilioServices,RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailServices mailServices, ITwilioServices twilioServices, RoleManager<IdentityRole> roleManager)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -25,8 +29,8 @@ namespace assignement_3.PL.Controllers
             _twilioServices = twilioServices;
             this._roleManager = roleManager;
         }
-        [HttpGet]      
-        
+        [HttpGet]
+
         public IActionResult SignUp()
         {
             return View();
@@ -34,19 +38,19 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         // Pass011@
-        public async Task< IActionResult> SignUp( SignUpDto model)
+        public async Task<IActionResult> SignUp(SignUpDto model)
         {
             var role = await _roleManager.FindByIdAsync(model.Role);
-          
+
             if (ModelState.IsValid) {
 
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 if (user is null)
                 {
                     user = await _userManager.FindByEmailAsync(model.Email);
-                    if(user is null)
+                    if (user is null)
                     {
-                         user = new AppUser
+                        user = new AppUser
                         {
                             UserName = model.UserName,
                             FirstName = model.FirstName,
@@ -62,7 +66,7 @@ namespace assignement_3.PL.Controllers
                             {
                                 await _userManager.AddToRoleAsync(user, role.Name);
                             }
-                            
+
                             return RedirectToAction("SignIn");
                         }
                         foreach (var erorr in task.Errors)
@@ -70,7 +74,7 @@ namespace assignement_3.PL.Controllers
                             ModelState.AddModelError("", erorr.Description);
                         }
                     }
-                    
+
                 }
 
                 ModelState.AddModelError("", "invalid sign up");
@@ -82,34 +86,40 @@ namespace assignement_3.PL.Controllers
 
         [HttpGet]
 
-        public IActionResult SignIn()
+        public async Task <IActionResult> SignIn(string? message = null)
         {
+            ViewBag.message = message;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(SignInDtocs model)
+        public async Task<IActionResult> SignIn(SignInDtocs model, string? ReturnUrl)
         {
             if (ModelState.IsValid)
             {
 
-               
-                   var user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user is not null)
-                    {
-                 var flag = await   _userManager.CheckPasswordAsync(user, model.Password);
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+                    var flag = await _userManager.CheckPasswordAsync(user, model.Password);
                     if (flag)
                     {
-                        var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.Remember,false);
+                        var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.Remember, false);
+
                         if (result.Succeeded)
                         {
-                          
+                            if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                            {
+                                return Redirect(ReturnUrl);
+                            }
+
                             return RedirectToAction(nameof(HomeController.Index), "Home");
                         }
                     }
-                    }
+                }
 
-                
+
 
                 ModelState.AddModelError("", "invalid sign in");
 
@@ -137,7 +147,7 @@ namespace assignement_3.PL.Controllers
             {
                 if (model.action == "EmailMethod")
                 {
-                    return RedirectToActionPreserveMethod("sendEmailForgetPassword", "Account" ,model);
+                    return RedirectToActionPreserveMethod("sendEmailForgetPassword", "Account", model);
                 }
                 else
                 {
@@ -197,8 +207,8 @@ namespace assignement_3.PL.Controllers
         public async Task<IActionResult> sendEmailForgetPassword(ForgetPasswordDto model) {
 
             if (ModelState.IsValid) {
-              var user = await _userManager.FindByEmailAsync(model.Email);
-                
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
                 if (user is not null)
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -220,9 +230,9 @@ namespace assignement_3.PL.Controllers
                         ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
                         return View("ForgetPassword", model);
                     }
-                 
-                       return RedirectToAction("CheckYourInbox");
-                    
+
+                    return RedirectToAction("CheckYourInbox");
+
                 }
 
             }
@@ -237,13 +247,13 @@ namespace assignement_3.PL.Controllers
             return View();
         }
 
-   
+
 
         [HttpGet]
-        public IActionResult ResetPassword(string email,string token)
+        public IActionResult ResetPassword(string email, string token)
         {
-            TempData["email"]=email;
-            TempData["token"]=token;
+            TempData["email"] = email;
+            TempData["token"] = token;
             return View();
         }
 
@@ -261,9 +271,56 @@ namespace assignement_3.PL.Controllers
                     var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
                     if (result.Succeeded) return RedirectToAction(actionName: "SignIn");
                 }
-                ModelState.AddModelError("","Invalid Reset Password Operation");
+                ModelState.AddModelError("", "Invalid Reset Password Operation");
             }
             return View();
         }
+
+
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+            claim => new
+            {
+        claim.Type,
+            claim.Value,
+            claim.Issuer,
+            claim.OriginalIssuer
+            });
+            var current_User = await _userManager.FindByEmailAsync(cliams.ToArray()[4].Value);
+            if (current_User is null)
+            {
+                await _signInManager.SignInAsync(
+               new AppUser
+               {
+                   FirstName = cliams.ToArray()[2].Value,
+                   UserName = cliams.ToArray()[1].Value,
+                   Email = cliams.ToArray()[4].Value
+               }, false);
+            }
+            else
+            {
+                
+                return RedirectToAction("SignIn", "Account",new { message = "user already exists"});
+            }
+
+
+
+            return RedirectToAction("Index", "Home");
+
+
+        }
+
+
     }
 }

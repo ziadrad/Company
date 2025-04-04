@@ -6,8 +6,11 @@
 @inject RoleManager<IdentityRole> RoleManager
 @{
     var user = await UserManager.FindByNameAsync(User.Identity.Name);
-    await SignInManager.RefreshSignInAsync(user);
-    var roles = await UserManager.GetRolesAsync(user);
+    IList<string> roles = new List<string>();
+    if (user is not null)
+    {
+        roles = await UserManager.GetRolesAsync(user);
+    }
     IdentityRole? getrole;
     IList<Claim> role_claims = new List<Claim>();
     if (roles.Count != 0)
