@@ -1,30 +1,13 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using System.Security.Claims
+﻿
 
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
+@inject IHttpContextAccessor http_context
 @{
-    ViewData["Title"] = "Home Page";
-    ViewContext.ViewBag.test = "myValue";
-    var user = await UserManager.FindByNameAsync(User.Identity.Name);
-    IList<string> roles = new List<string>();
-    if(user is not null){
-        await SignInManager.RefreshSignInAsync(user);
-         roles = await UserManager.GetRolesAsync(user);
-    }
+    checks_role role = new checks_role(SignInManager, UserManager, RoleManager, http_context);
 
-    IdentityRole? getrole;
-    IList<Claim> role_claims = new List<Claim>();
-    if (roles.Count !=0)
-    {
-        getrole = await RoleManager.FindByNameAsync(roles.First());
-        role_claims = await RoleManager.GetClaimsAsync(getrole);
-    }
-
-
-
-
+    var role_claims =  await role.check();
     //var role = rol;
 
     // var roleclaims = role; 
