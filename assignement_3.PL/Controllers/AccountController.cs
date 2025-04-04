@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace assignement_3.PL.Controllers
 {
@@ -321,6 +322,48 @@ namespace assignement_3.PL.Controllers
 
         }
 
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+        }
 
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+            claim => new
+            {
+                claim.Type,
+                claim.Value,
+                claim.Issuer,
+                claim.OriginalIssuer
+            });
+            var current_User = await _userManager.FindByEmailAsync(cliams.ToArray()[4].Value);
+            if (current_User is null)
+            {
+                await _signInManager.SignInAsync(
+               new AppUser
+               {
+                   FirstName = cliams.ToArray()[2].Value,
+                   UserName = cliams.ToArray()[1].Value,
+                   Email = cliams.ToArray()[4].Value
+               }, false);
+            }
+            else
+            {
+
+                return RedirectToAction("SignIn", "Account", new { message = "user already exists" });
+            }
+
+
+
+            return RedirectToAction("Index", "Home");
+
+
+        }
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace assignement_3.PL
 {
@@ -85,6 +86,12 @@ namespace assignement_3.PL
               //  options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
                 .AddCookie()
+                .AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
+                {
+                    options.ClientId = builder.Configuration["Authentication:Facebook:ClientId"]!;
+                    options.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"]!;
+                    // options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                })
               .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
               {
                   options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
