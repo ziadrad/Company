@@ -16,12 +16,14 @@ namespace assignement_3.DAL.Data.contexts
         public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base(options)
         {
 
+ 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityUser>().ToTable("Users");
+        
         }
      
        public DbSet<Department> Departments { get; set; }

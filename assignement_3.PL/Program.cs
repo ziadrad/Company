@@ -40,8 +40,13 @@ namespace assignement_3.PL
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt")
-
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Defualt"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+            }
             )
             );
             

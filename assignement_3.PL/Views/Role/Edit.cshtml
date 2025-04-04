@@ -6,10 +6,14 @@
 <h1>Edit</h1>
 
 
+
 <form class="my-5" asp-action="Edit" enctype="multipart/form-data">
+    <a asp-action="AddOrRemoveUsers" asp-route-Id="@Model.Id" class="btn btn-warning">AddOrRemoveUsers </a>
+
     <partial name="RolePartials/_CreateEditRolePartial"></partial>
 
 </form>
+
 
 
 @section ValidationSertion
