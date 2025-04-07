@@ -12,6 +12,7 @@ This repository contains my first MVC project. The project follows a layered arc
 - [Project Structure](#project-structure)
 - [Technologies Used](#technologies-used)
 - [Prerequisites](#prerequisites)
+- [Features](#Features)
 - [Installation](#installation)
 - [Running the Project](#running-the-project)
 - [Contributing](#contributing)
@@ -45,6 +46,28 @@ Before running the project, ensure that you have the following installed on your
 - [Visual Studio](https://visualstudio.microsoft.com/) (2019 or later recommended) or a compatible IDE.
 - .NET Framework (or .NET Core/5/6 depending on your project configuration) with the appropriate ASP.NET and Web Development workloads.
 - SQL Server (if the DAL requires a database instance) or an alternative database system as configured in the project.
+
+## Features
+
+- **Dynamic Role-Based System:** Supports multiple user roles that can be dynamically configured.
+- **Authentication:** 
+  - Standard login and signup functionality.
+  - Social login with Google and Facebook.
+- **Password Recovery:** 
+  - "Forgot Password" feature via email.
+  - SMS-based password recovery.
+- **CRUD Operations:** 
+  - Manage roles, employees, and departments with full Create, Read, Update, Delete operations.
+- **AJAX Search:** 
+  - Asynchronous search functionality for improved user experience.
+- **Responsive Design:** 
+  - Ensures optimal viewing and interaction experience across a wide range of devices.
+
+- **Data Validation:** 
+  - Implements robust data validation to ensure data integrity and security.
+
+
+
 
 ## Installation
 
