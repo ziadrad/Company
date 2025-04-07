@@ -52,3 +52,25 @@ Before running the project, ensure that you have the following installed on your
 
    ```bash
    git clone https://github.com/ziadrad/Mvc_Project.git
+
+
+2.**Open assignement_3.sln in Visual Studio.**
+
+3. **Restore NuGet packages:**
+
+- Visual Studio should automatically restore the necessary NuGet packages upon opening the solution. If not, right-click on the solution in Solution Explorer and select "Restore NuGet Packages."
+
+4.**Configure the database (if applicable):**
+
+-If your application requires a database connection, update the connection string in the appropriate configuration file ( appsettings.json).
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome! Feel free to fork the repository and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
+
+
+
+## Acknowledgements
+
+- Thanks to all the resources and tutorials that helped in building this project.
+- Special thanks to Route Academy for support and continuous learning.
