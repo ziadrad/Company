@@ -21,7 +21,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] </title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/assignement_3.PL.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"  />
 </head>
@@ -76,8 +75,8 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container pb-3 mb-3">
+        <main role="main" class="pb-3 mb-3">
 
             @* @if (User.IsInRole("Admin".ToLower())) *@
             @* { *@
@@ -98,7 +97,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top pt-1 footer text-muted">
         <div class="container">
             &copy; 2025 - CompanyMvc - Ziadrady
         </div>

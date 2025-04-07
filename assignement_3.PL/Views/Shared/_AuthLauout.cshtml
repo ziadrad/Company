@@ -1,53 +1,71 @@
-﻿<!--
-Author: Colorlib
-Author URL: https://colorlib.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
+﻿
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Creative Colorlib @ViewData["Title"] Form</title>
+	<title>@ViewData["Title"] </title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-	<!-- Custom Theme files -->
-	<link href="~/css/StyleSheet.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- //Custom Theme files -->
-	<!-- web font -->
-	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+
+
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+	
+	<link rel="stylesheet" href="~/css/StyleSheet.css"  />
+
 	<!-- //web font -->
 </head>
-<body>
-	<!-- main -->
-	<div class="main-w3layouts wrapper">
-		<h1>Creative @ViewData["Title"] Form</h1>
+<body style="background-color: #eee;">
 
+	<section class="vh-100" style="background-color: #eee;">
+		<div class="container py-5 h-100">
+			<div class="row d-flex justify-content-center align-items-center h-100">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<div class="card shadow-2-strong" style="border-radius: 1rem;">
+						<div class="card-body p-5 ">
 
-		<script src="~/lib/jquery/dist/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-		@RenderBody()
+							<h3 class="mb-5 h1 text-center">@ViewData["Title"]</h3>
 
-		<!-- copyright -->
-		<div class="colorlibcopy-agile">
-			<p>© 2018 Colorlib @ViewData["Title"] Form. All rights reserved | Design by <a href="https://colorlib.com/" target="_blank">Colorlib</a></p>
+							<script src="~/lib/jquery/dist/jquery.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+							@RenderBody()
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<!-- //copyright -->
-		<ul class="colorlib-bubbles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul>
-	</div>
-	<!-- //main -->
+	</section>
+
+
+	@* <div class="main-w3layouts wrapper"> *@
+	@* 	<h1>Creative @ViewData["Title"] Form</h1> *@
+
+
+	@* 	<script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+	@* 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script> *@
+	@* 	@RenderBody() *@
+
+	@* 	<!-- copyright --> *@
+	@* 	<div class="colorlibcopy-agile"> *@
+	@* 		<p>© 2018 Colorlib @ViewData["Title"] Form. All rights reserved | Design by <a href="https://colorlib.com/" target="_blank">Colorlib</a></p> *@
+	@* 	</div> *@
+	@* 	<!-- //copyright --> *@
+	@* 	<ul class="colorlib-bubbles"> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 		<li></li> *@
+	@* 	</ul> *@
+	@* </div> *@
+	@* <!-- //main --> *@
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	@await RenderSectionAsync("ValidationSection", required: false);

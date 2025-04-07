@@ -8,48 +8,83 @@
 }
 
 
-<div class="main-agileinfo">
-	<div class="agileits-top">
-		<div asp-validation-summary="All" class=" m-3 alert alert-danger" >
-		</div>
-		<form asp-action="SignUp" method="post">
-			<input class="text my-2" asp-for="UserName" placeholder="Username" required="">
-			<br />
-			<input class="text my-2" asp-for="FirstName" placeholder="Firstrname" required="">
-			<br />
-			<input class="text my-2" asp-for="LastName" placeholder="Lastname" required="">
-			<input class="text email my-2" asp-for="Email" placeholder="Email" required="">
-			<input class="text my-2 " asp-for="PhonNumber" placeholder="Phone Number" required="">
-			<span asp-validation-for="PhonNumber" class="text-danger"></span>
-
-			<input class="text my-2" asp-for="Password" placeholder="Password" required="">
-			<input class="text w3lpass my-2" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
-
-			<select class="form-select w-100 p-4" asp-for = "Role" >
-				<option selected>Select user Role </option>
-
-			@foreach (var role in _rolemanager.Roles.Select(u => new RollToReturnDto()
-			{
-
-				Id = u.Id,
-				Name = u.Name,
-			})){
-					<option value="@role.Id">@role.Name </option>
-			}
-
-			</select>
-			<div class="wthree-text">
-				<label class="anim">
-					<input type="checkbox" asp-for="IsAgree" class="checkbox" required="">
-					<span>I Agree To The Terms & Conditions</span>
-				</label>
-				<div class="clear"> </div>
-			</div>
-			<input type="submit" value="SIGNUP">
-		</form>
-		<p>have an Account? <a asp-action="SignIn"> Login Now!</a></p>
+<form asp-action="SignUp" method="post">
+	<div class="mb-3">
+		<label asp-for="UserName" class="form-label">UserName</label>
+		<input class="form-control" asp-for="UserName" required>
+		<span asp-validation-for="UserName" class="text-danger"></span>
 	</div>
-</div>
+	<div class="mb-3">
+		<label asp-for="FirstName" class="form-label">FirstName</label>
+		<input  class="form-control" asp-for="FirstName" required>
+		<span asp-validation-for="FirstName" class="text-danger"></span>
+	</div>
+	<div class="mb-3">
+		<label asp-for="LastName" class="form-label">LastName</label>
+		<input class="form-control" asp-for="LastName" required>
+		<span asp-validation-for="LastName" class="text-danger"></span>
+	</div>
+	<div class="mb-3">
+		<label asp-for="Email" class="form-label">Email address</label>
+		<input type="email" class="form-control" asp-for="Email" required>
+		<span asp-validation-for="Email" class="text-danger"></span>
+	</div>
+	<div class="mb-3">
+		<label asp-for="LastName" class="form-label">Phone Number</label>
+		<input class="form-control" asp-for="PhonNumber" placeholder="Phone Number" required="">
+		<span asp-validation-for="PhonNumber" class="text-danger"></span>
+	</div>
+	<div class="mb-3">
+		<label asp-for="Password" class="form-label">Password</label>
+		<input class="form-control" asp-for="Password" required>
+		<span asp-validation-for="Password" class="text-danger"></span>
+
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="ConfirmPassword" class="form-label">ConfirmPassword</label>
+		<input class="form-control" asp-for="ConfirmPassword" required>
+		<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+	</div>
+
+
+	<div class="mb-3">
+		<label asp-for="Role" class="form-label">User Role</label>
+	<select class="form-select w-100 " asp-for="Role">
+		<option selected>Select user Role </option>
+
+		@foreach (var role in _rolemanager.Roles.Select(u => new RollToReturnDto()
+   {
+
+	   Id = u.Id,
+	   Name = u.Name,
+   }))
+		{
+			<option value="@role.Id">@role.Name </option>
+		}
+
+	</select>
+	</div>
+
+	<div class="mb-3 form-check">
+		<input type="checkbox" class="form-check-input" asp-for="IsAgree">
+		<label class="form-check-label" asp-for="IsAgree">I Agree To The Terms & Conditions</label>
+	</div>
+	<div class="d-grid">
+		<button type="submit" class="btn btn-primary">Login</button>
+	</div>
+	
+
+
+</form>
+
+<p class="my-2"> have an Account? <a asp-action="SignIn" class="text-decoration-none">  Login ? </a></p>
+
+
+
+	
+	
 
 @section ValidationSection{
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
