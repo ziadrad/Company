@@ -112,7 +112,7 @@ namespace assignement_3.PL.Controllers
                 LastName = user.LastName,
                 Id = user.Id,
                 UserName = user.UserName,
-                PhonNumber = user.PhoneNumber,
+                PhonNumber = user.PhoneNumber.Remove(0,3),
                 Roles = _userManager.GetRolesAsync(user).Result,
             };
 
@@ -128,6 +128,7 @@ namespace assignement_3.PL.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
+
             ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
             return await Details(id, "Edit");
         }
