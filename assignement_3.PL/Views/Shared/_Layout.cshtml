@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="~/assignement_3.PL.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"  />
 </head>
-<body>
+<body class=" min-vh-100 d-flex flex-column position-absolute top-0 bottom-0 start-0 end-0">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -75,7 +75,7 @@
             </div>
         </nav>
     </header>
-    <div class="container pb-3 mb-3">
+    <div class="container pb-3 mb-3 ">
         <main role="main" class="pb-3 mb-3">
 
             @* @if (User.IsInRole("Admin".ToLower())) *@
@@ -97,7 +97,7 @@
         </main>
     </div>
 
-    <footer class="border-top pt-1 footer text-muted">
+    <footer class="border-top pt-1 footer text-muted mt-auto position-relative bottom-0">
         <div class="container">
             &copy; 2025 - CompanyMvc - Ziadrady
         </div>
@@ -106,5 +106,25 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("ValidationSertion", required: false)
+
+    <script>
+              $(document).ready(function() {
+          function toggleMobileElements() {
+            if ($(window).width() <= 768) {
+              $('.not_in_mobile').hide();
+            } else {
+              $('.not_in_mobile').show();
+            }
+          }
+
+          // Run on initial load
+          toggleMobileElements();
+
+          // Run on window resize
+          $(window).resize(function() {
+            toggleMobileElements();
+          });
+        });
+    </script>
 </body>
 </html>
