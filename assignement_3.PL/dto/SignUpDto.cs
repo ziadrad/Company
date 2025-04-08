@@ -33,6 +33,7 @@ namespace assignement_3.PL.dto
         [Compare(nameof(Password),ErrorMessage = "ConfirmPassword dosenot match the password ! !")]
         public string ConfirmPassword { get; set; }
 
+        
         public bool IsAgree { get; set; }
 
         [Required(ErrorMessage = "Role is Required ! !")]

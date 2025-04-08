@@ -42,7 +42,12 @@ namespace assignement_3.PL.Controllers
         public async Task<IActionResult> SignUp(SignUpDto model)
         {
             var role = await _roleManager.FindByIdAsync(model.Role);
-
+            if (model.IsAgree == false)
+            {
+                ViewBag.message = "invalid sign up: Please agree to the terms";
+                ModelState.AddModelError("", "invalid sign up: Please agree to the terms");
+                return View();
+            }
             if (ModelState.IsValid) {
 
                 var user = await _userManager.FindByNameAsync(model.UserName);
@@ -57,7 +62,7 @@ namespace assignement_3.PL.Controllers
                             FirstName = model.FirstName,
                             LastName = model.LastName,
                             Email = model.Email,
-                            PhoneNumber = "+20"+ model.PhonNumber,
+                            PhoneNumber = "+20" + model.PhonNumber,
                             isAgree = model.IsAgree,
 
                         };
@@ -68,19 +73,31 @@ namespace assignement_3.PL.Controllers
                             {
                                 await _userManager.AddToRoleAsync(user, role.Name);
                             }
-
+                            ViewBag.Successmessage = "user created successfully";
                             return RedirectToAction("SignIn");
                         }
-                        foreach (var erorr in task.Errors)
+                        else
                         {
-                            ModelState.AddModelError("", erorr.Description);
+                            foreach (var erorr in task.Errors)
+                            {
+                                ViewBag.message += $"invalid sign up: {erorr.Description} ";
+                                ModelState.AddModelError("", erorr.Description);
+
+                            }
                         }
+                        return View();
                     }
-
+                    else
+                    {
+                        ViewBag.message = "invalid sign up: Email already Exist";
+                        ModelState.AddModelError("", "invalid sign up: Email already Exist");
+                    }
                 }
-
-                ModelState.AddModelError("", "invalid sign up");
-
+                else
+                {
+                    ViewBag.message = "invalid sign up: UserName already Exist";
+                    ModelState.AddModelError("", "invalid sign up: UserName already Exist");
+                }
             }
             return View();
         }
@@ -128,8 +145,7 @@ namespace assignement_3.PL.Controllers
                     }
                 }
 
-
-
+                ViewBag.message = "invalid sign in";
                 ModelState.AddModelError("", "invalid sign in");
 
             }
