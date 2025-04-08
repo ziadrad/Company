@@ -4,9 +4,21 @@
 @{
 	ViewData["Title"] = "SignUp";
 	Layout = "~/Views/Shared/_AuthLauout.cshtml";
-
+	var message = ViewBag.message as string;
 }
 
+@if (!string.IsNullOrEmpty(message))
+{
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script type="text/javascript">
+		toastr.error("@message")
+	</script>
+}
+
+<div asp-validation-summary="All" class=" m-3 text-danger">
+	<div></div>
+</div>
 
 <form asp-action="SignUp" method="post">
 	<div class="mb-3">

@@ -3,6 +3,7 @@
 	ViewData["Title"] = "SignIn";
 	Layout = "~/Views/Shared/_AuthLauout.cshtml";
 	var message = ViewBag.message as string;
+	var Successmessage = ViewBag.Successmessage as string;
 
 }
 
@@ -15,8 +16,17 @@
 	</script>
 }
 
+@if (!string.IsNullOrEmpty(Successmessage))
+{
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script type="text/javascript">
+				toastr.success("@Successmessage")
+	</script>
+}
 
 		<div asp-validation-summary="All" class=" m-3 text-danger">
+	<div></div>
 		</div>
 
 		@* <div data-mdb-input-init class="form-outline mb-4"> *@
