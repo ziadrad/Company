@@ -73,8 +73,8 @@ namespace assignement_3.PL.Controllers
                             {
                                 await _userManager.AddToRoleAsync(user, role.Name);
                             }
-                            ViewBag.Successmessage = "user created successfully";
-                            return RedirectToAction("SignIn");
+                             
+                            return RedirectToAction("SignIn", "Account",new{ Successmessage = "user created successfully" } );
                         }
                         else
                         {
@@ -112,8 +112,10 @@ namespace assignement_3.PL.Controllers
 
         [HttpGet]
 
-        public async Task <IActionResult> SignIn(string? message = null)
+        public async Task <IActionResult> SignIn(string? message = null,string? Successmessage = null )
         {
+     
+            ViewBag.Successmessage = Successmessage;
             ViewBag.message = message;
             return View();
         }
