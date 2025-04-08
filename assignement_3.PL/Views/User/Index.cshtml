@@ -29,10 +29,10 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Id</th>
+                <th class=" not_in_mobile">Id</th>
                 <th>User Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th class=" not_in_mobile">First Name</th>
+                <th class=" not_in_mobile">Last Name</th>
                 <th>Email</th>
                 <th>PhoneNumber</th>
                 <th>Role</th>
@@ -46,10 +46,10 @@
             @foreach (var item in Model)
             {
                 <tr>
-                <td>@item.Id</td>
-                <td>@item.UserName</td>
-                <td>@item.FirstName</td>
-                <td>@item.LastName</td>
+                    <td class=" not_in_mobile">@item.Id</td>
+                <td >@item.UserName</td>
+                    <td class=" not_in_mobile">@item.FirstName</td>
+                    <td class=" not_in_mobile">@item.LastName</td>
                 <td>@item.Email</td>
                     <td>@item.PhonNumber</td>
                 <td>
