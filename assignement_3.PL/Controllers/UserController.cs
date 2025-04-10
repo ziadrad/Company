@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace assignement_3.PL.Controllers
 {
+    [Authorize(Policy = "ShowUserPagePolicy")]
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -24,6 +25,7 @@ namespace assignement_3.PL.Controllers
         }
      
         [HttpGet]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Index(string? SearchInput)
         {
             IEnumerable<UserToReturnDto> user;
@@ -38,7 +40,7 @@ namespace assignement_3.PL.Controllers
                     Id = u.Id,
                     PhonNumber = u.PhoneNumber,
                     UserName= u.UserName,
-                    Roles = _userManager.GetRolesAsync(u).Result,
+                    Roles = _userManager.GetRolesAsync(u).GetAwaiter().GetResult(),
                 });
                     
                     }
@@ -52,7 +54,7 @@ namespace assignement_3.PL.Controllers
                     Id = u.Id,
                     PhonNumber = u.PhoneNumber,
                     UserName = u.UserName,
-                    Roles = _userManager.GetRolesAsync(u).Result,
+                    Roles = _userManager.GetRolesAsync(u).GetAwaiter().GetResult(),
                 }).Where(u=>u.FirstName.ToLower().Contains(SearchInput.ToLower()));
             }
 
@@ -60,6 +62,7 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Search(string? SearchInput)
         {
             IEnumerable<UserToReturnDto> user;
@@ -74,7 +77,7 @@ namespace assignement_3.PL.Controllers
                     Id = u.Id,
                     PhonNumber = u.PhoneNumber,
                     UserName = u.UserName,
-                    Roles = _userManager.GetRolesAsync(u).Result,
+                    Roles = _userManager.GetRolesAsync(u).GetAwaiter().GetResult(),
                 });
 
             }
@@ -88,7 +91,7 @@ namespace assignement_3.PL.Controllers
                     Id = u.Id,
                     UserName = u.UserName,
                     PhonNumber = u.PhoneNumber,
-                    Roles = _userManager.GetRolesAsync(u).Result,
+                    Roles = _userManager.GetRolesAsync(u).GetAwaiter().GetResult(),
                 }).Where(u => u.FirstName.ToLower().Contains(SearchInput.ToLower()));
             }
 
@@ -96,6 +99,7 @@ namespace assignement_3.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Details(string? id, string viewName = "Details")
         {
 
@@ -104,7 +108,7 @@ namespace assignement_3.PL.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
-            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
             var dto = new UserToReturnDto()
             {
                 Email = user.Email,
@@ -112,8 +116,8 @@ namespace assignement_3.PL.Controllers
                 LastName = user.LastName,
                 Id = user.Id,
                 UserName = user.UserName,
-                PhonNumber = user.PhoneNumber.Remove(0,3),
-                Roles = _userManager.GetRolesAsync(user).Result,
+                PhonNumber = string.IsNullOrEmpty(user.PhoneNumber)? "":user.PhoneNumber.Remove(0,3),
+                Roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult(),
             };
 
             return View(viewName, dto);
@@ -121,6 +125,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpGet]
         [Authorize(Policy = "editPolicy")]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id is null) return BadRequest(error: "Invalid Id"); // 400
@@ -129,7 +134,7 @@ namespace assignement_3.PL.Controllers
 
             if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
 
-            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
             return await Details(id, "Edit");
         }
 
@@ -138,7 +143,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Edit([FromRoute] string id, UserToReturnDto model)
         {
             var role = await _roleManager.FindByIdAsync(model.Role);
@@ -159,7 +164,7 @@ namespace assignement_3.PL.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    await _userManager.RemoveFromRolesAsync(user, _userManager.GetRolesAsync(user).Result);
+                    await _userManager.RemoveFromRolesAsync(user, _userManager.GetRolesAsync(user).GetAwaiter().GetResult());
                     await _userManager.AddToRoleAsync(user, role.Name);
                     return RedirectToAction(nameof(Index));
                 }
@@ -170,6 +175,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpGet]
         [Authorize(Policy = "deletePolicy")]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Delete(string? id)
         {
 
@@ -178,7 +184,7 @@ namespace assignement_3.PL.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user is null) return NotFound(new { statusCode = 404, message = $"User With Id :{id} is not found" });
-            ViewData["userRole"] = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+            ViewData["userRole"] = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
 
             return await Details(id, "Delete");
@@ -186,6 +192,7 @@ namespace assignement_3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "ShowUserPagePolicy")]
         public async Task<IActionResult> Delete([FromRoute] string id, UserToReturnDto model)
         {
 
