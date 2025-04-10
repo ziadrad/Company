@@ -1,4 +1,4 @@
-# Mvc_Project
+# Company project
 
 This repository contains my first MVC project. The project follows a layered architecture pattern and is organized into the following parts:
 
