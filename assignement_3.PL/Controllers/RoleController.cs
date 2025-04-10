@@ -4,6 +4,7 @@ using assignement_3.DAL.Models;
 using assignement_3.PL.dto;
 using assignement_3.PL.Helpers;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Microsoft.Identity.Client;
 
 namespace assignement_3.PL.Controllers
 {
+    [Authorize(Policy = "ShowRolePagePolicy")]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -51,6 +53,7 @@ namespace assignement_3.PL.Controllers
             return View(rolls);
         }
 
+        [HttpGet]
         [HttpGet]
         public async Task<IActionResult> Details(string? id, string viewName = "Details")
         {

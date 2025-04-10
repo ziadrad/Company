@@ -210,7 +210,7 @@ namespace assignement_3.PL.Controllers
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+                        ModelState.AddModelError(key: "", errorMessage: ex.Message);
                         return View("ForgetPassword", model);
                     }
 
@@ -254,7 +254,7 @@ namespace assignement_3.PL.Controllers
                                });
                     }
                     catch (Exception ex) {
-                        ModelState.AddModelError(key: "", errorMessage: "Invalid Reset Password Operation ! !");
+                        ModelState.AddModelError(key: "", errorMessage: ex.Message);
                         return View("ForgetPassword", model);
                     }
 

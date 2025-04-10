@@ -68,11 +68,14 @@ namespace assignement_3.PL
 
            );
 
-                options.AddPolicy("deletePolicy",
-                                policy => policy.RequireClaim("DeletePermission", "True")
+           options.AddPolicy("deletePolicy",
+                                policy => policy.RequireClaim("DeletePermission", "True") );
 
-                                );
-        });
+            options.AddPolicy("ShowRolePagePolicy",
+                                    policy => policy.RequireClaim("ShowRolePage", "True"));
+            options.AddPolicy("ShowUserPagePolicy",
+                                  policy => policy.RequireClaim("ShowUserPage", "True"));
+            });
 
        
             builder.Services.ConfigureApplicationCookie(config =>
