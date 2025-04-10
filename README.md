@@ -16,7 +16,6 @@ This repository contains my first MVC project. The project follows a layered arc
 - [Installation](#installation)
 - [Running the Project](#running-the-project)
 - [Contributing](#contributing)
-- [License](#license)
 - [Acknowledgements](#acknowledgements)
 
 ## Introduction
